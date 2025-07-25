@@ -31,14 +31,43 @@ export default function RegisterSection({ onSwitch }: { onSwitch: () => void }) 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!acceptedTerms) {
-      alert("Debes aceptar los Términos y Condiciones para continuar.");
-      return;
+  const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!acceptedTerms) {
+    alert("Debes aceptar los Términos y Condiciones para continuar.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dni: formData.dni,
+        phone: formData.phone,
+        user: formData.user,
+      }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert("Usuario registrado correctamente");
+      onSwitch(); // ir al login
+    } else {
+      alert(result.error || "Error en el registro");
     }
-    console.log("Datos registrados:", formData);
-  };
+  } catch (err) {
+    console.error("Error:", err);
+    alert("Error al conectar con el servidor.");
+  }
+};
+
 
   return (
     <div className="w-full max-w-xl p-8 bg-white rounded-2xl shadow-2xl border border-cyan-100 animate-fade-in">

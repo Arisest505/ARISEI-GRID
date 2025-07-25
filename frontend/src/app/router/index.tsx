@@ -1,19 +1,81 @@
 import { Routes, Route } from "react-router-dom";
-import HomePage from "../../pages/HomePage";
-import HelpPage from "../../pages/HelpPage"; // Asegúrate de tener esta página creada
-import PlansPage from "../../pages/PlansPage"; // Asegúrate de tener esta página creada
-import AuthPage from "../../pages/AuthPage";
-// Asegúrate de tener esta página creada
+import LayoutPublico from "../../components/LayoutPublico";
+import LayoutPrivado from "../../components/LayoutPrivado";
+import RequirePlanAccess from "../../components/RequirePlanAccess";
 
-export default function App() {
+// Páginas públicas
+import HomePage from "../../pages/HomePage";
+import HelpPage from "../../pages/HelpPage";
+import PlansPage from "../../pages/PlansPage";
+import AuthPage from "../../pages/AuthPage";
+
+// Páginas privadas
+import ForoPage from "../../pages/ForoPage";
+import DetallePage from "../../pages/DetallePage";
+import ModulosPage from "../../pages/ModulePage";
+import IncidenciaPage from "../../pages/IncidenciaPage";
+import DefaultPage from "../../pages/DefaultPage";
+import ContadorPage from "../../pages/ContadorPage";
+
+export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/help" element={<HelpPage />} />
-      <Route path="/plans" element={<PlansPage />} />
-      <Route path="/auth" element={<AuthPage />} />
+      {/* Rutas públicas */}
+      <Route element={<LayoutPublico />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/plans" element={<PlansPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+      </Route>
 
-      {/* Puedes agregar más rutas aquí */}
+      {/* Rutas privadas */}
+      <Route element={<LayoutPrivado />}>
+        <Route path="/default" element={<DefaultPage />} />
+
+        {/* Solo accesibles si NO es rol Usuario */}
+        <Route
+          path="/foro"
+          element={
+            <RequirePlanAccess>
+              <ForoPage />
+            </RequirePlanAccess>
+          }
+        />
+        <Route
+          path="/modulos"
+          element={
+            <RequirePlanAccess>
+              <ModulosPage />
+            </RequirePlanAccess>
+          }
+        />
+        <Route
+          path="/incidencia"
+          element={
+            <RequirePlanAccess>
+              <IncidenciaPage />
+            </RequirePlanAccess>
+          }
+        />
+        <Route
+          path="/incidencia/:id"
+          element={
+            <RequirePlanAccess>
+              <DetallePage />
+            </RequirePlanAccess>
+          }
+        />
+
+        {/* Solo accesibles si es rol Contador */}
+        <Route
+          path="/contador"
+          element={
+            <RequirePlanAccess>
+              <ContadorPage />
+            </RequirePlanAccess>
+          }
+        />
+      </Route>
     </Routes>
   );
 }

@@ -16,7 +16,7 @@ export default function Footer() {
               className="w-[64px] h-[64px] object-contain"
             />
           </div>
-          <h4 className="text-lg font-semibold text-white">ARISEI SYSTEM</h4>
+          <h4 className="text-lg font-semibold text-white">ARISEI-GRID</h4>
           <p className="text-sm text-gray-400">
             Soluciones digitales con impacto humano y tecnológico.
           </p>
@@ -27,11 +27,11 @@ export default function Footer() {
           <h5 className="mb-2 text-base font-semibold text-white">Contacto</h5>
           <p className="flex items-center justify-center gap-2 md:justify-start">
             <Mail size={18} className="text-cyan-400" />
-            contacto@arisei.pe
+            arisearise410@gmail.com
           </p>
           <p className="flex items-center justify-center gap-2 md:justify-start">
             <Phone size={18} className="text-cyan-400" />
-            +51 999 123 456
+            +51 902 280 461
           </p>
         </div>
 
@@ -42,16 +42,17 @@ export default function Footer() {
             <MapPin size={18} className="text-cyan-400" />
             Operamos a nivel nacional – Perú
           </p>
-          <p className="flex items-center justify-center gap-2 md:justify-start">
+          {/* <p className="flex items-center justify-center gap-2 md:justify-start">
             <Globe size={18} className="text-cyan-400" />
             www.arisei.pe
-          </p>
+          </p> */}
+          
         </div>
       </div>
 
       {/* Línea inferior */}
       <div className="pt-4 mt-10 text-xs text-center text-gray-500 border-t border-gray-700">
-        © 2025 ARISEI SYSTEM. Todos los derechos reservados.
+        © 2025 ARISEI-GRID. Todos los derechos reservados.
       </div>
     </footer>
   );

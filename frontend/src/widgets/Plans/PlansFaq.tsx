@@ -42,7 +42,7 @@ export default function PlansFaq() {
   };
 
   return (
-    <section className="py-20 bg-gray-50 text-gray-900" id="faq">
+    <section className="py-20 text-gray-900 bg-gray-50" id="faq">
       <div className="max-w-4xl px-6 mx-auto">
         <h2 className="mb-12 text-3xl font-bold text-center md:text-4xl">
           Preguntas frecuentes
@@ -61,14 +61,14 @@ export default function PlansFaq() {
               >
                 <button
                   onClick={() => toggle(idx)}
-                  className="flex items-center justify-between w-full px-6 py-4 text-left hover:bg-gray-100 transition"
+                  className="flex items-center justify-between w-full px-6 py-4 text-left transition hover:bg-gray-100"
                 >
                   <div className="flex items-center gap-3 text-lg font-medium text-gray-800">
                     <HelpCircle className="w-5 h-5 text-cyan-600" />
                     <span>{item.question}</span>
                   </div>
                   {isOpen ? (
-                    <ChevronUp className="w-5 h-5 text-cyan-600 transition-transform" />
+                    <ChevronUp className="w-5 h-5 transition-transform text-cyan-600" />
                   ) : (
                     <ChevronDown className="w-5 h-5 text-gray-400 transition-transform" />
                   )}
