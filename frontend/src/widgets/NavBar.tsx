@@ -63,8 +63,13 @@ export default function NavBar() {
       <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         {/* Logo + Nombre */}
         <div className="flex items-center space-x-3">
-          <img src="/logo.webp" alt="Logo ARISEI" className="w-[52px] h-[52px] object-contain" />
-          <span className="text-2xl font-bold tracking-tight text-cyan-600">ARISEI</span>
+          <div className="transition-all duration-300 ease-in-out">
+            <img
+              src="/INCIDE_NET_(SVG_LOGO_MODO_CLARO).svg"
+              alt="Logo ARISEI"
+              className="w-[120px] h-[48px] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]"
+            />
+          </div>
         </div>
 
         {/* Navegación */}
@@ -72,7 +77,7 @@ export default function NavBar() {
           {NAV_LINKS.map((link) => (
             <Link key={link.href} to={link.href} className="relative font-medium group">
               {link.label}
-              <span className="absolute left-1/2 bottom-[-4px] w-0 h-[2px] bg-cyan-600 transition-all duration-300 transform -translate-x-1/2 group-hover:w-full" />
+              <span className="absolute left-1/2 bottom-[-4px] w-0 h-[2px] bg-cyan-400 transition-all duration-300 transform -translate-x-1/2 group-hover:w-full" />
             </Link>
           ))}
 
@@ -86,9 +91,9 @@ export default function NavBar() {
           ) : (
             <button
               onClick={() => navigate("/auth")}
-              className="px-4 py-2 text-sm font-semibold text-white transition rounded-lg shadow-md bg-cyan-600 hover:bg-cyan-700"
+              className="px-4 py-2 text-sm font-semibold text-white transition rounded-lg shadow-md bg-cyan-400 hover:bg-white hover:text-black"
             >
-              Ingresar
+              Iniciar Sesión
             </button>
           )}
 
@@ -96,12 +101,12 @@ export default function NavBar() {
           <div className="relative ml-4" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="p-2 transition rounded-full hover:bg-gray-200"
+              className="p-2 transition rounded-full hover:bg-cyan-100 hover:shadow-md hover:-translate-y-0.5 hover:scale-105 hover:shadow-cyan-300"
             >
-              <UserCircle2 className="w-6 h-6 text-cyan-700" />
+              <UserCircle2 className="w-6 h-6 text-black" />
             </button>
             {showUserMenu && (
-              <div className="absolute right-0 z-50 w-64 p-4 mt-2 space-y-2 bg-white border rounded-lg shadow-lg animate-fade-in">
+              <div className="absolute right-0 z-50 w-64 p-4 mt-2 space-y-2 bg-white border rounded-lg shadow-lg animate-fade-in border-cyan-500 ">
                 {user ? (
                   <>
                     <div className="flex items-center justify-between">
@@ -110,7 +115,7 @@ export default function NavBar() {
                       </span>
                       <button
                         onClick={() => copyToClipboard(user.nombre, "Nombre")}
-                        className="text-gray-500 hover:text-cyan-600"
+                        className="text-gray-500 hover:text-black hover:scale-110 hover:-translate-y-0.5 transition duration-300"
                       >
                         <Copy size={16} />
                       </button>
@@ -121,7 +126,7 @@ export default function NavBar() {
                       </span>
                       <button
                         onClick={() => copyToClipboard(user.codigo_usuario, "Código")}
-                        className="text-gray-500 hover:text-cyan-600"
+                        className="text-gray-500 hover:text-black"
                       >
                         <Copy size={16} />
                       </button>

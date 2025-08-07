@@ -10,7 +10,12 @@ export default function RequirePlanAccess({ children }: { children: JSX.Element 
   const rol = user?.rol;
   const tienePermisos = user?.permisos?.length > 0;
 
-  const accesoPermitido = rol === "Administrador" || rol === "Contador" || (rol === "Usuario-PRO" && tienePermisos);
+  const isUsuarioPRO = rol?.startsWith("Usuario-PRO");
+
+  const accesoPermitido =
+    rol === "Administrador" ||
+    rol === "Contador" ||
+    (isUsuarioPRO && tienePermisos);
 
   if (!accesoPermitido) {
     return <Navigate to="/default" replace />;

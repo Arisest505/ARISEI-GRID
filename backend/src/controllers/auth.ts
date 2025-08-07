@@ -8,6 +8,17 @@ interface AuthenticatedRequest extends ExpressRequest {
   };
 }
 
+interface AccesoConPermisoYModulo {
+  permiso: {
+    nombre: string;
+    modulo: {
+      nombre: string;
+      path: string;
+      icono: string;
+    };
+  };
+}
+
 export const getPerfilUsuario = async (req: AuthenticatedRequest, res: Response) => {
   const usuario = req.usuario;
 
@@ -34,7 +45,7 @@ export const getPerfilUsuario = async (req: AuthenticatedRequest, res: Response)
           },
         },
         suscripciones: {
-          where: { estado: "activo" },  // Filtramos por suscripciones activas
+          where: { estado: "activo" },
           include: {
             plan: true,
           },
@@ -46,15 +57,16 @@ export const getPerfilUsuario = async (req: AuthenticatedRequest, res: Response)
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    const permisos = userWithDetails.rol.accesos.map((a) => ({
+    const permisos = (userWithDetails.rol.accesos as AccesoConPermisoYModulo[]).map((a) => ({
       permiso: a.permiso.nombre,
       modulo: a.permiso.modulo.nombre,
       path: a.permiso.modulo.path,
       icono: a.permiso.modulo.icono,
     }));
 
-    // Verifica si hay un plan activo
-    const planActivo = userWithDetails.suscripciones.length > 0 ? userWithDetails.suscripciones[0].plan : null;
+    const planActivo = userWithDetails.suscripciones.length > 0
+      ? userWithDetails.suscripciones[0].plan
+      : null;
 
     res.json({
       id: userWithDetails.id,
@@ -63,11 +75,13 @@ export const getPerfilUsuario = async (req: AuthenticatedRequest, res: Response)
       rol: userWithDetails.rol.nombre,
       codigo_usuario: userWithDetails.codigo_usuario,
       permisos,
-      plan_activo: planActivo ? {
-        nombre: planActivo.nombre,
-        fecha_inicio: userWithDetails.suscripciones[0].fecha_inicio,
-        fecha_fin: userWithDetails.suscripciones[0].fecha_fin,
-      } : null,
+      plan_activo: planActivo
+        ? {
+            nombre: planActivo.nombre,
+            fecha_inicio: userWithDetails.suscripciones[0].fecha_inicio,
+            fecha_fin: userWithDetails.suscripciones[0].fecha_fin,
+          }
+        : null,
     });
   } catch (error) {
     console.error("Error al obtener perfil:", error);

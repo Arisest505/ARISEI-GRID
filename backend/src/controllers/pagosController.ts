@@ -152,7 +152,14 @@ export const confirmarPago = async (req: AuthenticatedRequest, res: Response) =>
   try {
     const pago = await prisma.pago.findUnique({
       where: { id },
-      include: { usuario: true },
+      include: {
+        usuario: true,
+        suscripcion: {
+          include: {
+            plan: true, // Incluye el plan para acceder a rol_asociado
+          },
+        },
+      },
     });
 
     if (!pago) {
@@ -169,27 +176,20 @@ export const confirmarPago = async (req: AuthenticatedRequest, res: Response) =>
       },
     });
 
-    // 2. Obtener ID del rol "Usuario-PRO"
-    const rolPRO = await prisma.rol.findUnique({
-      where: { nombre: "Usuario-PRO" },
-    });
-
-    if (!rolPRO) {
-      return res.status(500).json({ error: "Rol 'Usuario-PRO' no encontrado." });
-    }
-
-    // 3. Si el usuario tiene el rol actual "Usuario", actualizar a "Usuario-PRO"
-    const rolUsuario = await prisma.rol.findUnique({
-      where: { nombre: "Usuario" },
-    });
-
-    if (pago.usuario.rol_id === rolUsuario?.id) {
-      await prisma.usuario.update({
-        where: { id: pago.usuario.id },
-        data: {
-          rol_id: rolPRO.id,
-        },
+    // 2. Si hay suscripción y el plan tiene rol_asociado, actualizamos al usuario
+    if (pago.suscripcion?.plan?.rol_asociado) {
+      const rol = await prisma.rol.findUnique({
+        where: { nombre: pago.suscripcion.plan.rol_asociado },
       });
+
+      if (rol) {
+        await prisma.usuario.update({
+          where: { id: pago.usuario.id },
+          data: { rol_id: rol.id },
+        });
+      } else {
+        console.warn(`[CONFIRMAR_PAGO] Rol no encontrado: ${pago.suscripcion.plan.rol_asociado}`);
+      }
     }
 
     return res.status(200).json({

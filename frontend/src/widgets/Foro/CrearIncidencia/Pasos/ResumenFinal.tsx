@@ -9,6 +9,8 @@ import {
   AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 
 interface Props {
   persona: any;
@@ -27,13 +29,18 @@ export default function ResumenIncidenciaStep({
   onPublicar,
   loading,
 }: Props) {
+  const navigate = useNavigate(); // Instanciado dentro del componente
 
   const handlePublicarConAlerta = async () => {
+    toast.loading("Publicando incidencia...");
     try {
       await onPublicar();
-      toast.success("✅ Incidencia publicada con éxito y visible en el foro.");
+      toast.success("Incidencia publicada con éxito y visible en el foro.");
+      setTimeout(() => {
+        navigate("/foro"); // Redirección
+      }, 1000);
     } catch (error) {
-      toast.error("❌ No se pudo publicar la incidencia. Intenta nuevamente.");
+      toast.error("No se pudo publicar la incidencia. Intenta nuevamente.");
     }
   };
 
@@ -57,7 +64,7 @@ export default function ResumenIncidenciaStep({
             </ul>
           </section>
 
-          {/* Institucion */}
+          {/* Institución */}
           <section className="p-4 border shadow-sm bg-gray-50 rounded-xl">
             <h3 className="flex items-center gap-2 mb-2 text-lg font-semibold text-cyan-700">
               <School className="w-5 h-5" /> Institución
@@ -106,11 +113,13 @@ export default function ResumenIncidenciaStep({
             disabled={loading}
             className="flex items-center gap-2 px-8 py-3 text-sm font-semibold text-white transition rounded-lg bg-cyan-700 hover:bg-cyan-800 disabled:opacity-50"
           >
-            <UploadCloud className="w-5 h-5" /> {loading ? "Publicando..." : "Publicar Incidencia"}
+            <UploadCloud className="w-5 h-5" />
+            {loading ? "Publicando..." : "Publicar Incidencia"}
           </button>
 
           <p className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-            <CheckCircle className="w-4 h-4 text-green-500" /> Revisa los datos antes de continuar. Esta información será visible en el sistema.
+            <CheckCircle className="w-4 h-4 text-green-500" />
+            Revisa los datos antes de continuar. Esta información será visible en el sistema.
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { AlertTriangle, ShieldCheck, FileSearch, Gavel, Ban } from "lucide-react";
 
 const ABOUT_INTRO = `Nuestra plataforma combate la informalidad financiera académica,
@@ -44,20 +45,50 @@ export default function AboutSection() {
   return (
     <section className="py-20 text-gray-900 bg-white" id="about">
       <div className="max-w-6xl px-6 mx-auto text-center">
-        <h2 className="mb-6 text-3xl font-bold md:text-4xl">¿Qué es este sistema?</h2>
-        <p className="max-w-3xl mx-auto mb-4 text-lg text-gray-700">{ABOUT_INTRO}</p>
-        <p className="max-w-3xl mx-auto mb-12 text-gray-600 text-md">{ABOUT_PARAGRAPH}</p>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: false, amount: 0.5 }}
+          className="mb-6 text-3xl font-bold md:text-4xl"
+        >
+          ¿Qué es este sistema?
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: false, amount: 0.5 }}
+          className="max-w-3xl mx-auto mb-4 text-lg text-gray-700"
+        >
+          {ABOUT_INTRO}
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: false, amount: 0.5 }}
+          className="max-w-3xl mx-auto mb-12 text-gray-600 text-md"
+        >
+          {ABOUT_PARAGRAPH}
+        </motion.p>
 
         <div className="grid gap-8 text-left md:grid-cols-3">
           {aboutItems.map((item, idx) => (
-            <div
+            <motion.div
               key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.2 }}
+              viewport={{ once: false, amount: 0.4 }}
               className="p-6 transition-all duration-300 bg-gray-100 shadow-md hover:bg-gray-200 rounded-xl"
             >
               <div className="mb-4">{item.icon}</div>
               <h3 className="mb-2 text-xl font-semibold">{item.title}</h3>
               <p className="text-gray-700">{item.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

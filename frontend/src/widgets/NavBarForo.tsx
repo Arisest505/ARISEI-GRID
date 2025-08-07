@@ -57,7 +57,7 @@ useEffect(() => {
   const renderIcon = (iconName?: string) => {
     if (!iconName) return null;
     const Icon = (LucideIcons as any)[iconName];
-    return Icon ? <Icon className="w-4 h-4 text-cyan-600" /> : null;
+    return Icon ? <Icon className="w-4 h-4 text-cyan-500" /> : null;
   };
 
   const modulosUnicos = Array.from(
@@ -75,8 +75,13 @@ useEffect(() => {
       <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <img src="/logo.webp" alt="Logo ARISEI" className="w-[52px] h-[52px] object-contain" />
-          <span className="text-2xl font-bold tracking-tight text-cyan-600">ARISEI</span>
+                    <div className="transition-all duration-300 ease-in-out">
+            <img
+              src="/INCIDE_NET_(SVG_LOGO_MODO_CLARO).svg"
+              alt="Logo ARISEI"
+              className="w-[120px] h-[48px] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]"
+            />
+          </div>
         </div>
 
         {/* Navegación */}
@@ -95,7 +100,7 @@ useEffect(() => {
               >
                 {renderIcon(modulo.icono)}
                 {modulo.modulo}
-                <span className="absolute left-1/2 bottom-[-4px] w-0 h-[2px] bg-cyan-600 transition-all duration-300 transform -translate-x-1/2 group-hover:w-full" />
+                <span className="absolute left-1/2 bottom-[-4px] w-0 h-[2px] bg-cyan-400 transition-all duration-300 transform -translate-x-1/2 group-hover:w-full" />
               </Link>
             ))
           )}
@@ -103,7 +108,7 @@ useEffect(() => {
           {/* Cerrar sesión */}
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-red-600"
+            className="px-4 py-2 text-sm font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-white hover:text-red-500 hover:shadow-md"
           >
             Cerrar sesión
           </button>
@@ -112,9 +117,9 @@ useEffect(() => {
           <div className="relative ml-4" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="p-2 transition rounded-full hover:bg-gray-200"
+              className="p-2 transition rounded-full hover:bg-cyan-100 hover:shadow-md hover:-translate-y-0.5 hover:scale-105 hover:shadow-cyan-300 duration-300 ease-in-out"
             >
-              <UserCircle2 className="w-6 h-6 text-cyan-700" />
+              <UserCircle2 className="w-6 h-6 text-black" />
             </button>
 
             {showUserMenu && (
@@ -123,11 +128,11 @@ useEffect(() => {
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-gray-800">Usuario:</span>
-                      <div className="flex items-center gap-1 text-sm text-gray-700">
+                      <div className="flex items-center gap-1 text-sm text-gray-700 hover:cursor-pointer">
                         {user.nombre}
                         <button
                           onClick={() => copyToClipboard(user.nombre, "nombre")}
-                          className="ml-1 text-gray-500 hover:text-cyan-600"
+                          className="ml-1 text-gray-500 hover:text-black hover:cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:scale-105 hover:shadow-cyan-300 duration-300 ease-in-out animate-fade-in animate-fade-in "
                         >
                           {copiedField === "nombre" ? (
                             <Check size={16} className="text-green-600" />
@@ -146,7 +151,7 @@ useEffect(() => {
                         </span>
                         <button
                           onClick={() => copyToClipboard(user.codigo_usuario, "codigo")}
-                          className="ml-1 text-gray-500 hover:text-cyan-600"
+                          className="ml-1 text-gray-500 hover:text-black"
                         >
                           {copiedField === "codigo" ? (
                             <Check size={16} className="text-green-600" />

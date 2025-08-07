@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/auth"; // <-- Importa las rutas de autenticación
 import incidenciaRoutes from "./routes/incidencias";
 import listarIncidenciasRoutes from "./routes/listarincidencias";
 import autocompleteRoutes from "./routes/autocomplete";
@@ -11,6 +11,8 @@ import accesos from "./routes/accesos";
 import pagosRouter from "./routes/pagosRouter";
 import planesRouter from "./routes/planesRouter";
 import suscripcionesRouter from "./routes/suscripcionesRouter";
+import cargaMasivaRouter from "./routes/cargaMasiva";
+import roles from "./routes/roles";
 
 
 const app = express();
@@ -34,6 +36,8 @@ app.use("/api/accesos", accesos);
 app.use("/api/pagos", pagosRouter);
 app.use("/api/planes", planesRouter);
 app.use("/api/suscripciones", suscripcionesRouter);
+app.use("/api/incidencias/carga-masiva", cargaMasivaRouter);
+app.use("/api/roles", roles);
 
 
 const PORT = process.env.PORT || 5000;

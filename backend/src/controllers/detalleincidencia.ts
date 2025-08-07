@@ -66,7 +66,8 @@ export const getDetalleIncidencia = async (req: Request, res: Response) => {
         imagen_url: incidencia.persona.imagen_url,
         notas_adicionales: incidencia.persona.notas_adicionales,
 
-        vinculos: incidencia.persona.vinculos.map((v) => ({
+vinculos: incidencia.persona.vinculos.map((v: any) => ({
+
           id: v.id,
           tipo_vinculo: v.tipo_vinculo,
           fecha_creacion: v.fecha_creacion,

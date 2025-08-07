@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 const faqs = [
   {
-    question: "¿Qué es ARISEI-GRID?",
+    question: "¿Qué es IncideNET?",
     answer:
       "Es una plataforma digital que permite a las instituciones educativas registrar, consultar y compartir información sobre deudas estudiantiles no saldadas.",
   },
@@ -44,18 +45,28 @@ export default function FaqSection() {
   return (
     <section id="faq" className="py-20 text-gray-900 bg-white">
       <div className="max-w-4xl px-6 mx-auto">
-        <h2 className="mb-12 text-3xl font-bold text-center md:text-4xl">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-3xl font-bold text-center md:text-4xl"
+        >
           Preguntas frecuentes
-        </h2>
+        </motion.h2>
 
         <div className="space-y-4">
           {faqs.map((item, idx) => {
             const isOpen = openIndex === idx;
 
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="overflow-hidden transition-all duration-300 border-l-4 shadow-md border-cyan-600 bg-gray-50 rounded-xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                className="overflow-hidden transition-all duration-300 border-l-4 shadow-md border-cyan-500 bg-gray-50 rounded-xl hover:shadow-lg"
               >
                 <button
                   onClick={() => toggle(idx)}
@@ -64,19 +75,19 @@ export default function FaqSection() {
                   <span>{item.question}</span>
                   <ChevronDown
                     className={`transition-transform duration-300 ${
-                      isOpen ? "rotate-180" : ""
+                      isOpen ? "rotate-180 text-cyan-600" : ""
                     }`}
                   />
                 </button>
 
                 <div
-                  className={`px-6 pb-4 text-sm text-gray-700 transition-all duration-300 ${
-                    isOpen ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                  className={`px-6 pb-4 text-sm text-gray-700 transition-all duration-500 ${
+                    isOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
                   } overflow-hidden`}
                 >
                   {item.answer}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

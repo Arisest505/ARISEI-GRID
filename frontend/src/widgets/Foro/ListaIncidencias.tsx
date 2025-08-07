@@ -30,7 +30,7 @@ export default function ListaIncidencias() {
   }, []);
 
   return (
-    <div className="grid w-full max-w-6xl grid-cols-1 gap-6 px-4 py-6 mx-auto md:grid-cols-2">
+    <div className="grid w-full max-w-6xl grid-cols-2 gap-6 px-4 py-6 mx-auto md:grid-cols-3 lg:grid-cols-3">
       {incidencias.map((inc) => (
         <IncidenciaPreviewCard
             id={inc.id}

@@ -16,9 +16,15 @@ export const obtenerPlanes = async (_: Request, res: Response) => {
 
 // Crear un nuevo plan
 export const crearPlan = async (req: Request, res: Response) => {
-  const { nombre, descripcion, precio, duracion_meses } = req.body;
+  const {
+    nombre,
+    descripcion,
+    precio,
+    duracion_meses,
+    rol_asociado,
+  } = req.body;
 
-  if (!nombre || !precio || !duracion_meses) {
+  if (!nombre || !precio || !duracion_meses || !rol_asociado) {
     return res.status(400).json({ error: "Faltan datos obligatorios." });
   }
 
@@ -30,6 +36,7 @@ export const crearPlan = async (req: Request, res: Response) => {
         precio,
         duracion_meses,
         es_activo: true,
+        rol_asociado,
       },
     });
     res.status(201).json(nuevoPlan);
@@ -42,7 +49,13 @@ export const crearPlan = async (req: Request, res: Response) => {
 // Actualizar un plan existente
 export const actualizarPlan = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { nombre, descripcion, precio, duracion_meses } = req.body;
+  const {
+    nombre,
+    descripcion,
+    precio,
+    duracion_meses,
+    rol_asociado,
+  } = req.body;
 
   try {
     const actualizado = await prisma.plan.update({
@@ -52,6 +65,7 @@ export const actualizarPlan = async (req: Request, res: Response) => {
         descripcion,
         precio,
         duracion_meses,
+        rol_asociado,
       },
     });
 

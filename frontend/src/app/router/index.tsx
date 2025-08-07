@@ -16,6 +16,8 @@ import ModulosPage from "../../pages/ModulePage";
 import IncidenciaPage from "../../pages/IncidenciaPage";
 import DefaultPage from "../../pages/DefaultPage";
 import ContadorPage from "../../pages/ContadorPage";
+import CargaMasivaPage from "../../pages/CargaMasivaPage";
+import CrudPage from "../../pages/CrudPage";
 
 export default function AppRouter() {
   return (
@@ -75,6 +77,23 @@ export default function AppRouter() {
             </RequirePlanAccess>
           }
         />
+        <Route
+          path="/carga-masiva"
+          element={
+            <RequirePlanAccess>
+              <CargaMasivaPage />
+            </RequirePlanAccess>
+          }
+        />
+        <Route
+          path="/crud"
+          element={
+            <RequirePlanAccess>
+              <CrudPage />
+            </RequirePlanAccess>
+          }
+        />
+       
       </Route>
     </Routes>
   );

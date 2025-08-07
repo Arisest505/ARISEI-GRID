@@ -1,6 +1,4 @@
-// src/widgets/Foro/CrearIncidencia/Pasos/DatosIncidenciaForm.tsx
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { IncidenciaData } from "@/types/FormData";
 
@@ -10,10 +8,27 @@ interface Props {
   onBack: () => void;
 }
 
+const tiposComunes = [
+  "Deuda",
+  "Bullying",
+  "Agresión",
+  "Retraso Académico",
+  "Inasistencia Prolongada",
+  "Otro",
+];
+
 export default function DatosIncidenciaForm({ data, onNext, onBack }: Props) {
-  const [localData, setLocalData] = useState<IncidenciaData>({
-    ...data,
-  });
+  const [localData, setLocalData] = useState<IncidenciaData>({ ...data });
+  const [tipoSeleccionado, setTipoSeleccionado] = useState<string>(data.tipo_incidencia || "");
+  const [otroTipo, setOtroTipo] = useState<string>("");
+
+  useEffect(() => {
+    // Si viene un valor personalizado, selecciona automáticamente "Otro"
+    if (data.tipo_incidencia && !tiposComunes.includes(data.tipo_incidencia)) {
+      setTipoSeleccionado("Otro");
+      setOtroTipo(data.tipo_incidencia);
+    }
+  }, [data.tipo_incidencia]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -27,8 +42,30 @@ export default function DatosIncidenciaForm({ data, onNext, onBack }: Props) {
     }));
   };
 
+  const handleTipoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = e.target.value;
+    setTipoSeleccionado(selected);
+    if (selected !== "Otro") {
+      setLocalData((prev) => ({ ...prev, tipo_incidencia: selected }));
+      setOtroTipo("");
+    } else {
+      setLocalData((prev) => ({ ...prev, tipo_incidencia: "" }));
+    }
+  };
+
+  const handleOtroTipoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtroTipo(e.target.value);
+    setLocalData((prev) => ({
+      ...prev,
+      tipo_incidencia: e.target.value,
+    }));
+  };
+
   const handleNext = () => {
     onNext(localData);
+  };
+  const handleBack = () => {
+    onBack();
   };
 
 return (
@@ -62,16 +99,38 @@ return (
       </div>
 
       <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700">Tipo de Incidencia</label>
-        <input
-          type="text"
+        <label className="block mb-2 text-sm font-semibold text-slate-700">
+          Tipo de Incidencia
+        </label>
+        <select
           name="tipo_incidencia"
-          placeholder="Ej. bullying, deuda, agresión, retraso académico, etc."
-          value={localData.tipo_incidencia}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border rounded-lg"
-        />
+          value={tipoSeleccionado}
+          onChange={handleTipoChange}
+          className="w-full px-4 py-2 border rounded-lg text-slate-800 bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+        >
+          <option value="" disabled>
+            Selecciona un tipo...
+          </option>
+          {tiposComunes.map((tipo) => (
+            <option key={tipo} value={tipo}>
+              {tipo}
+            </option>
+          ))}
+        </select>
+
+        {tipoSeleccionado === "Otro" && (
+          <div className="mt-3">
+            <input
+              type="text"
+              placeholder="Especificar otro tipo de incidencia"
+              value={otroTipo}
+              onChange={handleOtroTipoChange}
+              className="w-full px-4 py-2 bg-white border rounded-lg text-slate-800 border-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+            />
+          </div>
+        )}
       </div>
+
 
      <div>
       <label className="block mb-1 text-sm font-medium text-gray-700">Monto de deuda (si aplica)</label>
@@ -143,7 +202,7 @@ return (
 
     <div className="flex justify-between mt-6">
       <button
-        onClick={onBack}
+        onClick={handleBack}
         className="flex items-center px-4 py-2 text-sm text-gray-600 transition bg-gray-200 rounded-lg hover:bg-gray-300"
       >
         <ArrowLeft className="w-4 h-4 mr-1" /> Anterior

@@ -61,7 +61,8 @@ export const filtrarIncidencias = async (req: Request, res: Response) => {
       },
     });
 
-    const resultados = incidencias.map((inc) => ({
+const resultados = incidencias.map((inc: any) => ({
+
       id: inc.id,
       titulo: inc.titulo,
       descripcion: inc.descripcion,
@@ -90,7 +91,8 @@ export const listarIncidencias = async (req: Request, res: Response) => {
       },
     });
 
-    const resultados = incidencias.map((inc) => ({
+const resultados = incidencias.map((inc: any) => ({
+
       id: inc.id,
       titulo: inc.titulo,
       descripcion: inc.descripcion,

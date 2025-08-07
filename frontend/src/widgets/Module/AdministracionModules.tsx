@@ -51,7 +51,7 @@ export default function AdministracionModules() {
         setRoles(await resRoles.json());
         setPermisos(await resPermisos.json());
       } catch (err) {
-        console.error("❌ Error cargando roles o permisos:", err);
+        console.error(" Error cargando roles o permisos:", err);
       }
     };
 
@@ -73,7 +73,7 @@ export default function AdministracionModules() {
         const data = await res.json();
         setAccesos(data);
       } catch (err) {
-        console.error("❌ Error cargando accesos:", err);
+        console.error(" Error cargando accesos:", err);
       } finally {
         setCargandoAccesos(false);
       }

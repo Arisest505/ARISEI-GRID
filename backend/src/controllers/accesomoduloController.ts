@@ -26,9 +26,9 @@ export const actualizarAccesos = async (req: Request, res: Response) => {
 
     await Promise.all(operaciones);
 
-    return res.status(200).json({ message: "✅ Accesos actualizados correctamente" });
+    return res.status(200).json({ message: " Accesos actualizados correctamente" });
   } catch (error) {
-    console.error("❌ Error al actualizar accesos:", error);
+    console.error(" Error al actualizar accesos:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -53,9 +53,9 @@ export const actualizarAccesoUno = async (req: Request, res: Response) => {
       create: { rol_id, permiso_modulo_id, acceso_otorgado },
     });
 
-    return res.status(200).json({ message: "✅ Acceso actualizado" });
+    return res.status(200).json({ message: " Acceso actualizado" });
   } catch (error) {
-    console.error("❌ Error al actualizar acceso individual:", error);
+    console.error(" Error al actualizar acceso individual:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

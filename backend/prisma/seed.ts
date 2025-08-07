@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Iniciando seed...");
+  console.log(" Iniciando seed...");
 
   // 1. Roles
   const roles = [
@@ -30,7 +30,7 @@ async function main() {
     },
     {
       id: "2",
-      nombre: "Planes",
+      nombre: "Suscripciones",
       path: "/plans",
       icono: "dollar-sign",
       orden_menu: 2,
@@ -38,19 +38,27 @@ async function main() {
     },
     {
       id: "3",
-      nombre: "Ayuda",
-      path: "/help",
+      nombre: "Crear",
+      path: "/crear",
       icono: "help-circle",
       orden_menu: 3,
       permisos: ["ver", "crear"],
     },
     {
       id: "4",
-      nombre: "Contactos",
-      path: "/contacts",
+      nombre: "Modulos",
+      path: "/modulos",
       icono: "phone",
       orden_menu: 4,
       permisos: ["ver"],
+    },
+        {
+      id: "5",
+      nombre: "Carga Masiva",
+      path: "/carga-masiva",
+      icono: "upload",
+      orden_menu: 5,
+      permisos: ["ver", "crear"],
     },
   ];
 
@@ -100,12 +108,12 @@ async function main() {
     }
   }
 
-  console.log("✅ Seed ejecutado correctamente.");
+  console.log("Seed ejecutado correctamente.");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Error en el seed:", e);
+    console.error(" Error en el seed:", e);
     process.exit(1);
   })
   .finally(async () => {

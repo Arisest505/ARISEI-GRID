@@ -24,8 +24,5 @@ dist-ssr
 *.sw?
 node_modules/
 .env
-package-lock.json
+
 dist/
-# frontend/.gitignore
-package-lock.json
-**/package-lock.json

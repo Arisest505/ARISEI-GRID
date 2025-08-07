@@ -192,7 +192,7 @@ export default function ForoSearch({ onSearch }: Props) {
       <div className="flex justify-end">
         <button
           type="submit"
-          className="px-6 py-2 font-semibold text-white transition rounded-lg bg-cyan-700 hover:bg-cyan-800"
+          className="w-full py-2 text-black transition rounded-lg hover:text-white bg-cyan-400 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-60 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 shadow-sm0"
         >
           Buscar incidencia
         </button>

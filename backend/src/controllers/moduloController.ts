@@ -60,3 +60,91 @@ export const cambiarRolUsuario = async (req: Request, res: Response) => {
     res.status(500).json({ error: "No se pudo cambiar el rol" });
   }
 };
+
+export const crearModulo = async (req: Request, res: Response) => {
+  try {
+    const { nombre, path, icono, orden_menu, visible_en_menu } = req.body;
+
+    const nuevoModulo = await prisma.modulo.create({
+      data: {
+        nombre,
+        path,
+        icono,
+        orden_menu,
+        visible_en_menu,
+      },
+    });
+
+    res.json(nuevoModulo);
+  } catch (error) {
+    console.error("Error al crear módulo:", error);
+    res.status(500).json({ error: "Error al crear módulo" });
+  }
+};
+
+// Actualizar módulo
+export const actualizarModulo = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { nombre, path, icono, orden_menu, visible_en_menu } = req.body;
+
+  try {
+    const moduloActualizado = await prisma.modulo.update({
+      where: { id },
+      data: {
+        nombre,
+        path,
+        icono,
+        orden_menu,
+        visible_en_menu,
+      },
+    });
+
+    res.json(moduloActualizado);
+  } catch (error) {
+    console.error("Error al actualizar módulo:", error);
+    res.status(500).json({ error: "Error al actualizar módulo" });
+  }
+};
+
+// Eliminar módulo
+export const eliminarModulo = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.modulo.delete({ where: { id } });
+    res.json({ message: "Módulo eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar módulo:", error);
+    res.status(500).json({ error: "Error al eliminar módulo" });
+  }
+};
+
+// POST /api/modulos/:id/permisos
+export const crearPermisosModulo = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { permisos } = req.body;
+
+  try {
+    const existentes = await prisma.permisoModulo.findMany({
+      where: { modulo_id: id },
+    });
+
+const yaCreados = existentes.map((p: any) => p.nombre.toLowerCase());
+
+    const nuevos = permisos.filter((p: string) => !yaCreados.includes(p.toLowerCase()));
+
+    const data = nuevos.map((nombre: string) => ({
+      nombre,
+      modulo_id: id,
+    }));
+
+    if (data.length > 0) {
+      await prisma.permisoModulo.createMany({ data });
+    }
+
+    res.json({ message: "Permisos creados correctamente" });
+  } catch (error) {
+    console.error("Error al crear permisos del módulo:", error);
+    res.status(500).json({ error: "Error al crear permisos" });
+  }
+};

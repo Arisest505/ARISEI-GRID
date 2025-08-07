@@ -16,14 +16,14 @@ export default function TermsAndConditionsSection({ onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-xl max-w-3xl w-full shadow-2xl relative animate-fade-in">
+      <div className="relative w-full max-w-3xl p-6 bg-white shadow-2xl rounded-xl animate-fade-in">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-red-500"
+          className="absolute text-2xl text-red-600 transition-all duration-300 top-3 right-3 hover:text-red-500 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500"
         >
-          ✕
+          X
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700">
+        <h2 className="mb-4 text-2xl font-bold text-cyan-700">
           📜 Términos y Condiciones Generales
         </h2>
         <div className="space-y-6 text-sm text-gray-700 max-h-[70vh] overflow-y-auto pr-2">
@@ -31,68 +31,101 @@ export default function TermsAndConditionsSection({ onClose }: Props) {
           <div>
             <h3 className="text-lg font-semibold text-cyan-600">1. Aceptación del Usuario</h3>
             <p>
-              Al registrarte en nuestra plataforma, confirmas haber leído y aceptado estos Términos y Condiciones. Esta plataforma está dirigida exclusivamente a representantes institucionales: docentes, directores y personal administrativo autorizado.
+              El ingreso, registro y uso de esta plataforma implica la aceptación total de los presentes Términos y Condiciones. Está dirigida exclusivamente a personas que representen formalmente a instituciones educativas o administrativas (docentes, directivos, personal autorizado). El usuario asume plena responsabilidad sobre el uso y gestión de su cuenta.
             </p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-cyan-600">2. Uso Responsable</h3>
+            <h3 className="text-lg font-semibold text-cyan-600">2. Uso Correcto y Responsable</h3>
             <p>
-              El usuario se compromete a utilizar la plataforma exclusivamente para fines institucionales. Queda estrictamente prohibido:
+              El usuario se compromete a hacer uso de la plataforma única y exclusivamente para fines legítimos, profesionales y relacionados con su institución. Se prohíbe expresamente:
             </p>
-            <ul className="list-disc list-inside ml-4">
-              <li>Incitar al odio, violencia, racismo o discriminación de cualquier tipo.</li>
-              <li>Realizar amenazas contra otros usuarios o instituciones.</li>
-              <li>Difundir contenido ilegal, ofensivo o falso.</li>
-              <li>Suplantar identidad o manipular información institucional.</li>
-              <li>Promover prácticas ilegales o actividades fraudulentas.</li>
+            <ul className="ml-4 list-disc list-inside">
+              <li>Incitar, compartir o divulgar contenidos que promuevan el odio, racismo, violencia o discriminación.</li>
+              <li>Amenazar o acosar a otros usuarios.</li>
+              <li>Publicar o enviar información falsa, ilegal o sin autorización.</li>
+              <li>Suplantar identidades o falsificar información institucional.</li>
+              <li>Utilizar la plataforma para fines no permitidos o fuera de su objetivo educativo o administrativo.</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-cyan-600">3. Validación y Supervisión</h3>
+            <h3 className="text-lg font-semibold text-cyan-600">3. Verificación y Validación Institucional</h3>
             <p>
-              Todos los datos proporcionados por el usuario están sujetos a verificación. Nos reservamos el derecho de realizar validaciones institucionales y de identidad, incluyendo el historial crediticio del usuario mediante entidades autorizadas como <strong>Infocorp</strong>.
+              Los datos registrados están sujetos a verificación por nuestro equipo. Se podrá:
             </p>
+            <ul className="ml-4 list-disc list-inside">
+              <li>Validar identidad del usuario con datos institucionales.</li>
+              <li>Solicitar documentación adicional.</li>
+              <li>Verificar antecedentes y reputación digital mediante fuentes públicas o privadas (ej. Infocorp en Perú).</li>
+              <li>Deshabilitar temporalmente funcionalidades si se detectan inconsistencias.</li>
+            </ul>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold text-cyan-600">4. Derechos del Administrador</h3>
             <p>
-              Los administradores y creadores de esta plataforma se reservan el derecho de:
+              El administrador o equipo gestor de la plataforma se reserva el derecho de:
             </p>
-            <ul className="list-disc list-inside ml-4">
-              <li>Suspender o eliminar cuentas sin previo aviso si se infringen estos términos.</li>
-              <li>Bloquear cuentas ante indicios de uso indebido, contenido ofensivo o actividad sospechosa.</li>
-              <li>Enviar notificaciones automáticas relacionadas a pagos, alertas o recordatorios de gestión institucional.</li>
+            <ul className="ml-4 list-disc list-inside">
+              <li>Suspender, eliminar o editar cualquier cuenta o contenido sin previo aviso si se infringen los presentes términos o se incurre en faltas graves.</li>
+              <li>Bloquear de manera preventiva a usuarios sospechosos de manipulación, mal uso, fraudes u otros comportamientos que pongan en riesgo la integridad del sistema o sus usuarios.</li>
+              <li>Limitar temporalmente funciones para mantener la seguridad y operación del sistema.</li>
+              <li>Emitir notificaciones automáticas (recordatorios, alertas, vencimientos de servicios, etc.).</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-cyan-600">5. Pagos y Servicios</h3>
+            <h3 className="text-lg font-semibold text-cyan-600">5. Servicios, Planes y Política de Pagos</h3>
             <p>
-              Los servicios ofrecidos, como el plan PRO, son de pago. La activación se realiza bajo validación institucional. <strong>No se realizan reembolsos</strong> si se detecta incumplimiento de estos términos o uso indebido.
+              Los planes ofrecidos en la plataforma son servicios digitales de activación institucional. Al adquirir uno de estos planes, el usuario:
+            </p>
+            <ul className="ml-4 list-disc list-inside">
+              <li>Reconoce que está contratando un servicio no tangible.</li>
+              <li>Acepta que no se realizarán reembolsos, salvo error técnico verificado por el equipo.</li>
+              <li>Entiende que el uso indebido o el incumplimiento de los términos puede causar la desactivación inmediata sin derecho a compensación.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-cyan-600">6. Comunicaciones Oficiales</h3>
+            <p>
+              Toda comunicación será enviada al correo institucional registrado por el usuario. Es responsabilidad del usuario mantener actualizada esta información.
             </p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-cyan-600">6. Comunicación y Soporte</h3>
+            <h3 className="text-lg font-semibold text-cyan-600">7. Modificaciones de los Términos</h3>
             <p>
-              Las comunicaciones oficiales se realizarán al correo electrónico registrado por el usuario. Recomendamos mantenerlo actualizado y revisar regularmente su bandeja de entrada.
-              Ante dudas, quejas o reportes institucionales, se puede contactar a nuestro equipo mediante la sección de contacto.
+              Estos Términos y Condiciones pueden ser actualizados o modificados en cualquier momento. Las nuevas condiciones serán notificadas en la plataforma o vía email. El uso continuado del sistema implica su aceptación.
             </p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-cyan-600">7. Responsabilidad Legal</h3>
+            <h3 className="text-lg font-semibold text-cyan-600">8. Responsabilidad Legal del Usuario</h3>
             <p>
-              Esta plataforma cumple con las leyes de protección de datos y ética digital. Toda acción legal en nuestra contra que derive de un mal uso por parte del usuario podrá ser contrademandada. Al aceptar, el usuario declara ser responsable de su actividad dentro de la plataforma y exime a los creadores de responsabilidades ante terceros.
+              El usuario acepta ser responsable de toda acción ejecutada bajo su cuenta. El sistema registra actividad, interacciones y cambios para fines de auditoría.
+            </p>
+            <p>
+              Cualquier intento de dañar, vulnerar o desprestigiar el sistema podrá ser denunciado ante las autoridades pertinentes. Los administradores quedan exentos de toda responsabilidad ante terceros por actos cometidos por los usuarios dentro de la plataforma.
             </p>
           </div>
 
           <div>
-            <p className="font-semibold text-gray-700 text-center">
-               Al aceptar estos términos, confirmas que has leído, comprendido y aceptado todas las condiciones establecidas.
+            <h3 className="text-lg font-semibold text-cyan-600">9. Exclusión de Responsabilidad</h3>
+            <p>
+              Esta plataforma no se hace responsable por:
+            </p>
+            <ul className="ml-4 list-disc list-inside">
+              <li>Fallos del sistema por causas ajenas (corte eléctrico, caída de servidores, etc.).</li>
+              <li>Daños o perjuicios causados por terceros utilizando datos sin autorización.</li>
+              <li>Decisiones tomadas por instituciones basadas en información cargada por los usuarios.</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-semibold text-center text-gray-700">
+               Al continuar utilizando esta plataforma, declaras haber leído, comprendido y aceptado en su totalidad los presentes Términos y Condiciones, eximiendo al equipo desarrollador de cualquier mal uso o interpretación indebida.
             </p>
           </div>
         </div>

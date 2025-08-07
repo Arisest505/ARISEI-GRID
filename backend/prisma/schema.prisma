@@ -1,5 +1,4 @@
-// ESTE ARCHIVO FUE CORREGIDO PARA QUE FUNCIONE CON PRISMA
-// Incluye relaciones inversas y claves únicas necesarias
+// 📦 GENERADORES Y FUENTE DE DATOS
 
 generator client {
   provider = "prisma-client-js"
@@ -10,7 +9,7 @@ datasource db {
   url      = env("DIRECT_URL")
 }
 
-// MODELOS
+// 🧑‍💼 USUARIO Y ROLES
 
 model Usuario {
   id                String    @id @default(uuid())
@@ -49,6 +48,8 @@ model Rol {
   accesos  RolModuloAcceso[]
 }
 
+// 💳 PLANES Y SUSCRIPCIONES
+
 model Plan {
   id             String  @id @default(uuid())
   nombre         String  @unique
@@ -56,26 +57,29 @@ model Plan {
   precio         Decimal
   duracion_meses Int
   es_activo      Boolean @default(true)
+ rol_asociado String // <-- opcional temporalmente
 
   suscripciones SuscripcionUsuario[]
 }
 
+
+
 model SuscripcionUsuario {
   id                           String    @id @default(uuid())
   usuario_id                   String
-  usuario                      Usuario   @relation(fields: [usuario_id], references: [id])
   plan_id                      String
-  plan                         Plan      @relation(fields: [plan_id], references: [id])
   fecha_inicio                 DateTime  @default(now())
   fecha_fin                    DateTime
   estado                       String
   metodo_activacion            String
   activado_por_usuario_id      String?
-  activado_por_usuario         Usuario?  @relation("UsuarioActiva", fields: [activado_por_usuario_id], references: [id])
   fecha_activacion             DateTime?
   es_renovable_automaticamente Boolean   @default(false)
 
-  pago Pago?
+  usuario                Usuario  @relation(fields: [usuario_id], references: [id])
+  plan                   Plan     @relation(fields: [plan_id], references: [id])
+  activado_por_usuario   Usuario? @relation("UsuarioActiva", fields: [activado_por_usuario_id], references: [id])
+  pago                   Pago?
 }
 
 model Pago {
@@ -88,7 +92,7 @@ model Pago {
   fecha_pago               DateTime            @default(now())
   metodo_pago              String
   referencia_transaccion   String?             @unique
-  estado_pago              String
+  estado_pago              String              // <--- asegúrate de tener esto
   suscripcion_id           String?             @unique
   suscripcion              SuscripcionUsuario? @relation(fields: [suscripcion_id], references: [id])
   recibido_por_usuario_id  String?
@@ -97,6 +101,9 @@ model Pago {
   qr_usado_url             String?
   medio_verificado         Boolean             @default(false)
 }
+
+
+// 🏫 INSTITUCIONES E INCIDENCIAS
 
 model Institucion {
   id             String   @id @default(uuid())
@@ -150,6 +157,8 @@ model Incidencia {
   creador     Usuario           @relation(fields: [creado_por_usuario_id], references: [id])
 }
 
+// 👪 FAMILIA Y VÍNCULOS
+
 model Familiar {
   id         String                   @id @default(uuid())
   dni        String                   @unique
@@ -157,8 +166,9 @@ model Familiar {
   telefono   String?
   correo     String?
   usuario_id String?
-  usuario    Usuario?                 @relation(fields: [usuario_id], references: [id])
-  vinculos   VinculoFamiliarPersona[]
+
+  usuario  Usuario?                 @relation(fields: [usuario_id], references: [id])
+  vinculos VinculoFamiliarPersona[]
 }
 
 model VinculoFamiliarPersona {
@@ -170,7 +180,11 @@ model VinculoFamiliarPersona {
 
   familiar Familiar          @relation(fields: [familiar_id], references: [id])
   persona  PersonaIncidencia @relation(fields: [persona_id], references: [id])
+
+  @@unique([familiar_id, persona_id])
 }
+
+// 🧩 MODULOS Y PERMISOS
 
 model Modulo {
   id              String  @id @default(uuid())

@@ -29,21 +29,23 @@ export default function LoginSection({ onSwitch }: { onSwitch: () => void }) {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage({ type: "success", text: "Inicio de sesión exitoso 🎉" });
+        setMessage({ type: "success", text: "🎉 Inicio de sesión exitoso 🎉" });
 
         localStorage.setItem("token", data.token);
         login(data.user);      // Actualiza el contexto
         reloadUser();          // Asegura sincronización completa
 
         setTimeout(() => {
-          const tienePlan = data.user.permisos?.length > 0;
-          const rol = data.user.rol;
+        const rol = data.user.rol;
+        const tienePlan = Array.isArray(data.user.permisos) && data.user.permisos.length > 0;
 
-          if (rol === "Usuario" && !tienePlan) {
-            navigate("/default");
-          } else {
-            navigate("/foro");
-          }
+        if (rol?.startsWith("Usuario") && !tienePlan) {
+          console.log("Usuario logueado:", data.user);
+          navigate("/default");
+        } else {
+          navigate("/foro");
+        }
+
         }, 1000);
       } else {
         setMessage({ type: "error", text: data.error || "Credenciales incorrectas" });
@@ -101,7 +103,7 @@ export default function LoginSection({ onSwitch }: { onSwitch: () => void }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-2 text-white transition rounded-lg bg-cyan-700 hover:bg-cyan-800 disabled:opacity-60"
+        className="w-full py-2 text-black transition rounded-lg hover:text-white bg-cyan-400 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-60 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 shadow-sm"
       >
         {loading ? "Ingresando..." : "Ingresar"}
       </button>

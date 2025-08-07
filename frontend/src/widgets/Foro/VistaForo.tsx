@@ -45,7 +45,7 @@ export default function VistaForo() {
 
       <div className="grid w-full max-w-6xl grid-cols-1 gap-6 px-4 py-6 mx-auto md:grid-cols-2">
         {loading ? (
-          <div className="text-center text-gray-400 col-span-full animate-pulse">
+          <div className="text-lg text-center text-gray-400 col-span-full animate-pulse ">
             Cargando incidencias...
           </div>
         ) : incidencias.length > 0 ? (

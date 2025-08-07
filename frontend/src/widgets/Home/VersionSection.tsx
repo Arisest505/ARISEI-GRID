@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Settings2, Users2, Lightbulb } from "lucide-react";
 
 const versions = [
@@ -38,21 +39,37 @@ export default function VersionSection() {
     <section id="versions" className="py-20 text-gray-900 bg-white">
       <div className="max-w-6xl px-6 mx-auto">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: false, amount: 0.5 }}
+            className="mb-4 text-3xl font-bold md:text-4xl"
+          >
             Historial de versiones
-          </h2>
-          <p className="max-w-2xl mx-auto text-lg text-gray-600">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: false, amount: 0.5 }}
+            className="max-w-2xl mx-auto text-lg text-gray-600"
+          >
             Revisa cómo el sistema ha evolucionado para combatir el fraude académico y proteger la integridad de las instituciones.
-          </p>
+          </motion.p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
           {versions.map((item, idx) => (
-            <div
+            <motion.div
               key={idx}
-              className={`p-6 rounded-xl bg-gray-50 border-l-4 shadow-md hover:shadow-lg transition-all duration-300 ${item.borderColor}`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.2 }}
+              viewport={{ once: false, amount: 0.5 }}
+              className={`group p-6 bg-gray-50 border-l-4 shadow-md rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ${item.borderColor}`}
             >
-              <div className="flex items-center mb-3 space-x-3">
+              <div className="flex items-center mb-3 space-x-3 group-hover:animate-[wiggle_0.5s_ease-in-out]">
                 {item.icon}
                 <h3 className="text-xl font-semibold">{item.title}</h3>
               </div>
@@ -61,7 +78,7 @@ export default function VersionSection() {
               </p>
               <p className="text-sm text-gray-700">{item.description}</p>
               <p className="mt-4 text-xs text-gray-400">Versión: {item.version}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

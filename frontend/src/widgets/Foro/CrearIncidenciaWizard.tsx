@@ -1,7 +1,4 @@
-// src/widgets/Foro/CrearIncidenciaWizard.tsx
 import { useState } from "react";
-
-// Componentes por paso
 import PersonaIncidenciaForm from "./CrearIncidencia/Pasos/PersonaIncidenciaForm";
 import InstitucionForm from "./CrearIncidencia/Pasos/InstitucionForm";
 import DatosIncidenciaForm from "./CrearIncidencia/Pasos/DatosIncidenciaForm";
@@ -57,18 +54,11 @@ export default function CrearIncidenciaWizard() {
   const [loading, setLoading] = useState(false);
   
 const { user } = useAuth();
-console.log("🔐 Usuario desde contexto:", user); //  Asegúrate de tener esto implementado
 
   const next = () => setStep((prev) => Math.min(prev + 1, 5));
   const back = () => setStep((prev) => Math.max(prev - 1, 1));
   
-console.log("📤 Enviando datos a la API:", {
-  persona,
-  institucion,
-  incidencia,
-  familiares,
-  usuario_id: user?.id,
-});
+
 
   const handlePublicar = async () => {
     setLoading(true);
@@ -89,8 +79,6 @@ console.log("📤 Enviando datos a la API:", {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Error inesperado");
 
-      alert(" Incidencia publicada correctamente");
-      // Aquí podrías redirigir o reiniciar estados
     } catch (err) {
       console.error(err);
       alert(" Error al publicar la incidencia");
@@ -100,69 +88,78 @@ console.log("📤 Enviando datos a la API:", {
   };
 
   return (
-   <section className="py-16 bg-gray-200" id="ask"> 
-     <div className="max-w-6xl px-6 py-8 mx-auto ">
-      <h2 className="mb-6 text-3xl font-bold text-center text-cyan-700">
-        Crear nueva incidencia
-      </h2>
+    <section
+      className="relative min-h-screen py-20 bg-center bg-no-repeat bg-cover"
+      style={{
+        backgroundImage: "url('/01sdasgtkyukjgh.jpg')",
+      }}
+      id="crear-incidencia"
+    >
+      {/* Capa negra suave para contraste */}
+      <div className="absolute inset-0 z-0 bg-black/40 backdrop-blur-sm" />
 
-      <div className="p-6 transition-all duration-300 ease-in-out bg-white shadow-md rounded-xl">
-        {step === 1 && (
-          <PersonaIncidenciaForm
-            initialData={persona}
-            onNext={(data) => {
-              setPersona(data);
-              next();
-            }}
-          />
-        )}
+      <div className="relative z-10 max-w-6xl px-6 mx-auto">
+        <h2 className="mb-10 text-4xl font-extrabold text-center text-white drop-shadow-lg">
+          Crear nueva incidencia
+        </h2>
 
-        {step === 2 && (
-          <InstitucionForm
-            initialData={institucion}
-            onBack={back}
-            onNext={(data) => {
-              setInstitucion(data);
-              next();
-            }}
-          />
-        )}
+        <div className="p-6 transition-all duration-500 bg-white border shadow-2xl rounded-xl border-slate-200 animate-fade-in">
+          {step === 1 && (
+            <PersonaIncidenciaForm
+              initialData={persona}
+              onNext={(data) => {
+                setPersona(data);
+                next();
+              }}
+            />
+          )}
 
-        {step === 3 && (
-          <DatosIncidenciaForm
-            data={incidencia}
-            onBack={back}
-            onNext={(data) => {
-              setIncidencia(data);
-              next();
-            }}
-          />
-        )}
+          {step === 2 && (
+            <InstitucionForm
+              initialData={institucion}
+              onBack={back}
+              onNext={(data) => {
+                setInstitucion(data);
+                next();
+              }}
+            />
+          )}
 
-        {step === 4 && (
-          <FamiliaresForm
-            data={familiares}
-            onBack={back}
-            onNext={(data) => {
-              setFamiliares(data);
-              next();
-            }}
-          />
-        )}
+          {step === 3 && (
+            <DatosIncidenciaForm
+              data={incidencia}
+              onBack={back}
+              onNext={(data) => {
+                setIncidencia(data);
+                next();
+              }}
+            />
+          )}
 
-        {step === 5 && (
-          <ResumenFinal
-            persona={persona}
-            institucion={institucion}
-            incidencia={incidencia}
-            familiares={familiares}
-            onBack={back}
-            onPublicar={handlePublicar}
-            loading={loading}
-          />
-        )}
+          {step === 4 && (
+            <FamiliaresForm
+              data={familiares}
+              onBack={back}
+              onNext={(data) => {
+                setFamiliares(data);
+                next();
+              }}
+            />
+          )}
+
+          {step === 5 && (
+            <ResumenFinal
+              persona={persona}
+              institucion={institucion}
+              incidencia={incidencia}
+              familiares={familiares}
+              onBack={back}
+              onPublicar={handlePublicar}
+              loading={loading}
+            />
+          )}
+        </div>
       </div>
-    </div>
     </section>
   );
 }

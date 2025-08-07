@@ -15,7 +15,7 @@ export default function HelpQuestionForm() {
     <section className="py-16 bg-white" id="ask">
       <div className="max-w-3xl px-6 mx-auto text-center">
         <h2 className="mb-6 text-3xl font-bold">Envía una consulta o solicitud</h2>
-        <p className="mb-6 text-gray-600 text-sm">
+        <p className="mb-6 text-sm text-black">
           Puedes escribirnos sobre reportes de deuda, alertas activas, problemas de acceso, validación institucional o cualquier asunto relacionado al sistema.
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col justify-center gap-4 sm:flex-row">
@@ -29,7 +29,7 @@ export default function HelpQuestionForm() {
           />
           <button
             type="submit"
-            className="px-6 py-3 font-semibold text-white transition rounded-lg bg-cyan-600 hover:bg-cyan-700"
+            className="px-4 py-2 text-sm font-semibold text-white transition duration-300 rounded-lg shadow-sm bg-cyan-400 hover:bg-sky-500 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 hover:text-black"
           >
             Enviar
           </button>
