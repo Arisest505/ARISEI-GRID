@@ -5,8 +5,9 @@ import CrudRol from "./CrudModulo";
 import { Boton } from "../../components/ui/BotonPrincipal";
 
 const views = [
+    { key: "roles", label: "Gestionar Roles" },
   { key: "modulos", label: "Gestionar Módulos" },
-  { key: "roles", label: "Gestionar Roles" },
+
 ];
 
 export default function CrudsAdminPage() {
@@ -27,8 +28,8 @@ export default function CrudsAdminPage() {
       </div>
 
       <div className="transition-all duration-300">
-        {active === "modulos" && <CrudModulo />}
-        {active === "roles" && <CrudRol />}
+        {active === "roles" && <CrudModulo />}
+        {active === "modulos" && <CrudRol />}
       </div>
     </div>
   );

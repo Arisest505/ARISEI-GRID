@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,6 +8,7 @@ export default function CargaMasivaForm() {
   const [subiendo, setSubiendo] = useState(false);
   const [errores, setErrores] = useState<string[]>([]);
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null); // referencia al input
 
   const handleArchivo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -16,6 +17,7 @@ export default function CargaMasivaForm() {
       setErrores([]);
     } else {
       toast.error("Por favor, selecciona un archivo .xlsx válido.");
+      e.target.value = ""; // limpiar si es inválido
     }
   };
 
@@ -28,13 +30,11 @@ export default function CargaMasivaForm() {
     if (typeof valor === "number") {
       const baseDate = new Date(Date.UTC(1899, 11, 30));
       const fecha = new Date(baseDate.getTime() + valor * 86400000);
-      return fecha.toISOString().split("T")[0]; // yyyy-mm-dd
+      return fecha.toISOString().split("T")[0];
     }
 
     if (typeof valor === "string") {
-      if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-        return valor; // yyyy-mm-dd correcto
-      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor;
 
       const partes = valor.split("/");
       if (partes.length === 3) {
@@ -105,6 +105,12 @@ export default function CargaMasivaForm() {
           } else {
             setErrores([]);
           }
+
+          // limpiar archivo y input después de subir
+          setArchivo(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
         } else {
           toast.error(result.error || "Error al subir los datos.");
         }
@@ -118,45 +124,45 @@ export default function CargaMasivaForm() {
 
     reader.readAsBinaryString(archivo);
   };
-return (
-  <div className="max-w-3xl p-8 mx-auto border shadow-xl bg-white/5 backdrop-blur-md border-white/10 rounded-2xl animate-fade-in">
-    <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-800">
-      Carga Masiva de Incidencias
-    </h2>
 
-    <input
-      type="file"
-      accept=".xlsx"
-      onChange={handleArchivo}
-      className="w-full px-4 py-2 mb-6 text-gray-800 placeholder-gray-500 transition-all bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
-    />
+  return (
+    <div className="max-w-3xl p-8 mx-auto border shadow-xl bg-white/5 backdrop-blur-md border-white/10 rounded-2xl animate-fade-in">
+      <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-800">
+        Carga Masiva de Incidencias
+      </h2>
 
-    <button
-      onClick={handleSubir}
-      disabled={subiendo}
-      className={`w-full py-2 text-black transition rounded-lg hover:text-white bg-cyan-400 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-60 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 shadow-sm px-4 py-3 text-sm font-semibold rounded-lg transition-all duration-200 tracking-wide shadow-sm  ${
-        subiendo
-          ? "bg-sky-100 text-sky-600 cursor-not-allowed"
-          : "bg-sky-500 hover:bg-sky-600 text-white"
-      }`}
-    >
-      {subiendo ? "Subiendo..." : "Subir incidencias"}
-    </button>
+      <input
+        type="file"
+        accept=".xlsx"
+        ref={fileInputRef} // ref para poder limpiarlo
+        onChange={handleArchivo}
+        className="w-full px-4 py-2 mb-6 text-gray-800 placeholder-gray-500 transition-all bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
+      />
 
-    {errores.length > 0 && (
-      <div className="p-5 mt-8 overflow-y-auto text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg shadow-inner max-h-60">
-        <strong className="block mb-2 font-medium text-red-800">
-          Errores detectados en el archivo:
-        </strong>
-        <ul className="pl-5 space-y-1 list-disc">
-          {errores.map((err, i) => (
-            <li key={i}>{err}</li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </div>
-);
+      <button
+        onClick={handleSubir}
+        disabled={subiendo}
+        className={`w-full py-2 text-black transition rounded-lg hover:text-white bg-cyan-400 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-60 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 shadow-sm px-4 py-3 text-sm font-semibold rounded-lg transition-all duration-200 tracking-wide shadow-sm  ${
+          subiendo
+            ? "bg-sky-100 text-sky-600 cursor-not-allowed"
+            : "bg-sky-500 hover:bg-sky-600 text-white"
+        }`}
+      >
+        {subiendo ? "Subiendo..." : "Subir incidencias"}
+      </button>
 
-
+      {errores.length > 0 && (
+        <div className="p-5 mt-8 overflow-y-auto text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg shadow-inner max-h-60">
+          <strong className="block mb-2 font-medium text-red-800">
+            Errores detectados en el archivo:
+          </strong>
+          <ul className="pl-5 space-y-1 list-disc">
+            {errores.map((err, i) => (
+              <li key={i}>{err}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }

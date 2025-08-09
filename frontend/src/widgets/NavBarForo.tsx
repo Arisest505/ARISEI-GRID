@@ -45,7 +45,7 @@ export default function NavBarForo() {
 const handleLogout = () => {
   logout(); // ← Limpia el estado del usuario
   toast.success("Sesión cerrada correctamente");
-  navigate("/auth", { replace: true }); // Redirige sin refrescar la página
+  navigate("/", { replace: true }); // Redirige sin refrescar la página
 };
 
 useEffect(() => {
@@ -74,15 +74,13 @@ useEffect(() => {
     >
       <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         {/* Logo */}
-        <div className="flex items-center space-x-3">
-                    <div className="transition-all duration-300 ease-in-out">
-            <img
-              src="/INCIDE_NET_(SVG_LOGO_MODO_CLARO).svg"
-              alt="Logo ARISEI"
-              className="w-[120px] h-[48px] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]"
-            />
-          </div>
-        </div>
+      <div className="flex items-center gap-2">
+                <img
+                  src="/LogoNegroIncideNETFont.svg"
+                  alt="Logo ARISEI"
+                  className="w-[100px] h-[auto] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.7)] transition-all duration-300 ease-in-out"
+                />
+            </div>
 
         {/* Navegación */}
         <nav className="items-center hidden space-x-6 text-gray-800 md:flex">

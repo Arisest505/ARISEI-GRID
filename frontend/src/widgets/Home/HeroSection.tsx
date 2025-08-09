@@ -21,9 +21,9 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: false, amount: 0.5 }}
 
-          src="/INCIDE_NET_(SVG_LOGO_MODO_CLARO).svg"
+          src="/LogoNegro_SOLOLOGO_IncideNETFont.svg"
           alt="Logo ARISEI"
-          className="w-[360px] h-[240px] object-contain mb-6"
+          className="w-[240px] h-[auto] object-contain mb-6"
         />
 
         <motion.h2

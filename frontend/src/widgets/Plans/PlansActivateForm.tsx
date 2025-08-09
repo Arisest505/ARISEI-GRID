@@ -87,7 +87,7 @@ export default function PlansActivateForm() {
 
           {/* Formulario */}
           <motion.div
-            className="flex flex-col justify-center w-full gap-4 px-10 py-14 md:w-[55%]"
+            className="flex flex-col justify-center w-full gap-4 px-10 py-14 md:w-[55%] text-black"
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}

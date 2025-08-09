@@ -22,9 +22,9 @@ export default function Footer() {
         >
           <div className="p-3 shadow-sm">
             <img
-              src="/INCIDE_NET_(SVG_LOGO_MODO_OSCURO).svg"
+              src="/LogoBlancoIncideNETFont.svg"
               alt="Logo ARISEI"
-              className="w-[120px] h-[48px] object-contain"
+              className="w-[200px] h-[auto] object-contain"
             />
           </div>
           <h4 className="text-lg font-bold text-white">IncideNET by ARISEI</h4>

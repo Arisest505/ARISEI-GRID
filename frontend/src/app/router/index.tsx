@@ -18,6 +18,8 @@ import DefaultPage from "../../pages/DefaultPage";
 import ContadorPage from "../../pages/ContadorPage";
 import CargaMasivaPage from "../../pages/CargaMasivaPage";
 import CrudPage from "../../pages/CrudPage";
+import ViewUserPage from "../../pages/ViewUserPage";
+
 
 export default function AppRouter() {
   return (
@@ -90,6 +92,14 @@ export default function AppRouter() {
           element={
             <RequirePlanAccess>
               <CrudPage />
+            </RequirePlanAccess>
+          }
+        />
+        <Route
+          path="/view-user"
+          element={
+            <RequirePlanAccess>
+              <ViewUserPage />
             </RequirePlanAccess>
           }
         />

@@ -13,6 +13,7 @@ import planesRouter from "./routes/planesRouter";
 import suscripcionesRouter from "./routes/suscripcionesRouter";
 import cargaMasivaRouter from "./routes/cargaMasiva";
 import roles from "./routes/roles";
+import userViewRoutes from "./routes/userViewRoutes";
 
 
 const app = express();
@@ -38,7 +39,10 @@ app.use("/api/planes", planesRouter);
 app.use("/api/suscripciones", suscripcionesRouter);
 app.use("/api/incidencias/carga-masiva", cargaMasivaRouter);
 app.use("/api/roles", roles);
+app.use("/api/usuario", userViewRoutes);
 
+
+  
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

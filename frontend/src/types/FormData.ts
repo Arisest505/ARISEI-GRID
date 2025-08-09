@@ -48,3 +48,5 @@ export interface CrearIncidenciaFormData {
   incidencia: IncidenciaData;
   familiares: FamiliarVinculoData[];
 }
+
+

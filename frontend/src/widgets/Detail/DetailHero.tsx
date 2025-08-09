@@ -3,7 +3,7 @@ export default function HelpHero() {
     <section
       className="relative py-32 text-center text-white bg-sky-900"
       style={{
-        backgroundImage: "url('/A high-contrast, low-key overhead bird’s eye view of papeles bond in various white file folders, emphasizing deep shadows and a dramatic top-down perspective.jpg')",
+        backgroundImage: "url('/01sdasgtkyukjgh.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
