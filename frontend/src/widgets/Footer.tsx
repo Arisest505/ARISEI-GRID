@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin,Facebook, } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Footer() {
@@ -24,7 +24,7 @@ export default function Footer() {
             <img
               src="/LogoBlanco_SOLOLOGO_IncideNETFont.svg"
               alt="Logo ARISEI"
-              className="w-[64px] h-[auto] object-contain"
+              className="w-[64px] h-auto object-contain"
             />
           </div>
           <h4 className="text-lg font-bold text-white">IncideNET by ARISEI</h4>
@@ -51,10 +51,9 @@ export default function Footer() {
             +51 902 280 461
           </p>
           <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
-            <Facebook size={18} className="text-white " />
-            IncideNet 
+            <Facebook size={18} className="text-white" />
+            IncideNet
           </p>
-            
         </motion.div>
 
         {/* Alcance */}
@@ -63,13 +62,18 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="space-y-4"
+          className="flex flex-col items-center space-y-4 md:items-start"
         >
           <h5 className="mb-2 text-base font-bold text-white">Cobertura</h5>
-          <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
+          <p className="flex items-center gap-2 font-bold">
             <MapPin size={18} className="text-white" />
             Operamos a nivel nacional – Perú
           </p>
+          <img
+            src="/Flag_of_Peru_(state).webp"
+            alt="Bandera de Perú"
+            className="w-16 h-auto rounded-sm shadow-md"
+          />
         </motion.div>
       </div>
 
