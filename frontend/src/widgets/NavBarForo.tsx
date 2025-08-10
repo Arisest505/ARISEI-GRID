@@ -263,6 +263,7 @@ export default function NavBarForo() {
                         </button>
                       </div>
                     </div>
+                    <p className="px-2 py-2 font-bold text-red-500">Recuerda Cerrar Sesion siempre antes de cerrar la ventana del navegador</p>
                   </>
                 ) : (
                   <p className="text-sm text-gray-600">No identificado</p>
@@ -413,6 +414,7 @@ export default function NavBarForo() {
               </button>
             </div>
           </div>
+          <p className="px-2 py-2 font-bold text-red-500">Recuerda Cerrar Sesion siempre antes de cerrar la ventana del navegador</p>
         </div>
       </aside>
     </header>

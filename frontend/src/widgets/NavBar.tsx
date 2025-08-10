@@ -222,6 +222,8 @@ export default function NavBar() {
                         <Copy size={16} />
                       </button>
                     </div>
+                    <p>Recuerda Cerrar Sesion siempre antes de cerrar la ventana del navegador</p>
+                    <p className="text-xs text-gray-600"></p>
                   </>
                 ) : (
                   <p className="text-sm text-gray-600">Usuario: No identificado</p>
