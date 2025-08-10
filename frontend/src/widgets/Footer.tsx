@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin,Facebook, } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Footer() {
@@ -28,7 +28,7 @@ export default function Footer() {
             />
           </div>
           <h4 className="text-lg font-bold text-white">IncideNET by ARISEI</h4>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm font-bold text-white">
             Soluciones digitales con impacto humano y tecnológico.
           </p>
         </motion.div>
@@ -42,14 +42,19 @@ export default function Footer() {
           className="space-y-4"
         >
           <h5 className="mb-2 text-base font-bold text-white">Contacto</h5>
-          <p className="flex items-center justify-center gap-2 md:justify-start">
+          <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
             <Mail size={18} className="text-white" />
             incidenetsuport@gmail.com
           </p>
-          <p className="flex items-center justify-center gap-2 md:justify-start">
+          <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
             <Phone size={18} className="text-white" />
             +51 902 280 461
           </p>
+          <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
+            <Facebook size={18} className="text-white " />
+            IncideNet 
+          </p>
+            
         </motion.div>
 
         {/* Alcance */}
@@ -61,7 +66,7 @@ export default function Footer() {
           className="space-y-4"
         >
           <h5 className="mb-2 text-base font-bold text-white">Cobertura</h5>
-          <p className="flex items-center justify-center gap-2 md:justify-start">
+          <p className="flex items-center justify-center gap-2 font-bold md:justify-start">
             <MapPin size={18} className="text-white" />
             Operamos a nivel nacional – Perú
           </p>
