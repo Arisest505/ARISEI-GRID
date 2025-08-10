@@ -2,13 +2,14 @@ import * as XLSX from "xlsx";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
+import { apiFetch } from "../../lib/api";
 
 export default function CargaMasivaForm() {
   const [archivo, setArchivo] = useState<File | null>(null);
   const [subiendo, setSubiendo] = useState(false);
   const [errores, setErrores] = useState<string[]>([]);
   const { user } = useAuth();
-  const fileInputRef = useRef<HTMLInputElement>(null); // referencia al input
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleArchivo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -17,7 +18,7 @@ export default function CargaMasivaForm() {
       setErrores([]);
     } else {
       toast.error("Por favor, selecciona un archivo .xlsx válido.");
-      e.target.value = ""; // limpiar si es inválido
+      e.target.value = "";
     }
   };
 
@@ -35,14 +36,12 @@ export default function CargaMasivaForm() {
 
     if (typeof valor === "string") {
       if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor;
-
       const partes = valor.split("/");
       if (partes.length === 3) {
         const [dd, mm, yyyy] = partes;
         return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
       }
     }
-
     return undefined;
   };
 
@@ -89,35 +88,37 @@ export default function CargaMasivaForm() {
           creado_por_usuario_id: user.id,
         }));
 
-        const response = await fetch("http://localhost:5000/api/incidencias/carga-masiva", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ incidencias: normalizadas }),
-        });
+        try {
+          const res = await apiFetch("/incidencias/carga-masiva", {
+            method: "POST",
+            body: JSON.stringify({ incidencias: normalizadas }),
+          });
 
-        const result = await response.json();
+          const result = await res.json();
 
-        if (response.ok) {
-          toast.success(result.mensaje || "Carga completada.");
-          if (result.errores?.length) {
-            setErrores(result.errores);
-            toast.warning("Algunas filas tuvieron errores.");
+          if (res.ok) {
+            toast.success(result.mensaje || "Carga completada.");
+            if (result.errores?.length) {
+              setErrores(result.errores);
+              toast.warning("Algunas filas tuvieron errores.");
+            } else {
+              setErrores([]);
+            }
+
+            setArchivo(null);
+            if (fileInputRef.current) fileInputRef.current.value = "";
           } else {
-            setErrores([]);
+            toast.error(result.error || "Error al subir los datos.");
           }
-
-          // limpiar archivo y input después de subir
-          setArchivo(null);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        } else {
-          toast.error(result.error || "Error al subir los datos.");
+        } catch (error) {
+          console.error(error);
+          toast.error("Error al procesar el archivo o conectarse al servidor.");
+        } finally {
+          setSubiendo(false);
         }
-      } catch (error) {
-        console.error(error);
-        toast.error("Error al procesar el archivo o conectarse al servidor.");
-      } finally {
+      } catch (err) {
+        console.error(err);
+        toast.error("Error al leer el archivo.");
         setSubiendo(false);
       }
     };
@@ -134,15 +135,15 @@ export default function CargaMasivaForm() {
       <input
         type="file"
         accept=".xlsx"
-        ref={fileInputRef} // ref para poder limpiarlo
+        ref={fileInputRef}
         onChange={handleArchivo}
-        className="w-full px-4 py-2 mb-6 text-gray-800 placeholder-gray-500 transition-all bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
+        className="w-full px-4 py-2 mb-6 text-gray-800 placeholder-gray-500 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
       />
 
       <button
         onClick={handleSubir}
         disabled={subiendo}
-        className={`w-full py-2 text-black transition rounded-lg hover:text-white bg-cyan-400 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-60 hover:shadow-lg hover:shadow-cyan-300 hover:-translate-y-0.5 hover:scale-105 shadow-sm px-4 py-3 text-sm font-semibold rounded-lg transition-all duration-200 tracking-wide shadow-sm  ${
+        className={`w-full py-2 text-black transition rounded-lg ${
           subiendo
             ? "bg-sky-100 text-sky-600 cursor-not-allowed"
             : "bg-sky-500 hover:bg-sky-600 text-white"

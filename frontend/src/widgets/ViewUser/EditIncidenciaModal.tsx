@@ -22,8 +22,8 @@ import {
   Link as LinkIcon
 } from "lucide-react";
 import { toast } from "sonner";
+import { apiFetch } from "../../lib/api"; // ajusta la ruta si tu estructura difiere
 
-const API = "http://localhost:5000";
 
 interface Props {
   isOpen: boolean;
@@ -43,7 +43,6 @@ const Label: React.FC<{ icon?: React.ReactNode; text: string }> = ({ icon, text 
 export default function EditIncidenciaModalV2({ isOpen, onClose, incidenciaId, onUpdate }: Props) {
   const [formData, setFormData] = useState<any>({ persona: {}, institucion: {}, incidencia: {}, familiares: [] });
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("token");
 
   const setIncidenciaField = (field: string, value: any) =>
     setFormData((prev: any) => ({ ...prev, incidencia: { ...prev.incidencia, [field]: value } }));
@@ -136,15 +135,12 @@ const handleSubmit = async () => {
       if (v !== undefined) payload[k] = v;
     }
 
-    // 5) Disparamos el PUT correcto
-    const res = await fetch(`${API}/api/usuario/incidencias/${incidenciaId}`, {
+    // 5) Disparamos el PUT correcto (via apiFetch)
+    const res = await apiFetch(`/usuario/incidencias/${incidenciaId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify(payload),
     });
+
 
     // Intenta leer JSON; si no es JSON, lee texto para debug
     let data: any = null;
@@ -199,9 +195,8 @@ const handleDelete = async () => {
 
     const cleanId = encodeURIComponent(String(incidenciaId).trim());
 
-    const res = await fetch(`${API}/api/usuario/incidencias/${cleanId}`, {
+    const res = await apiFetch(`/usuario/incidencias/${cleanId}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
     });
 
     const text = await res.text();
@@ -232,9 +227,8 @@ const handleDelete = async () => {
   useEffect(() => {
     const fetchIncidencia = async () => {
       try {
-        const res = await fetch(`${API}/api/usuario/incidencias/${incidenciaId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const res = await apiFetch(`/usuario/incidencias/${incidenciaId}`);
+
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Error al obtener incidencia");
 

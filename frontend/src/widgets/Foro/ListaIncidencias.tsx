@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import IncidenciaPreviewCard from "./IncidenciaPreviewCard";
-
+import { apiFetch } from "../../lib/api";
 interface Incidencia {
   id: string;
   titulo: string;
@@ -16,19 +16,19 @@ export default function ListaIncidencias() {
 
   const itemsPerPage = 10; // 5 filas × 3 columnas
   const totalPages = Math.ceil(incidencias.length / itemsPerPage);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/listarincidencias/listar");
-        const data = await response.json();
-        setIncidencias(data);
-      } catch (err) {
-        console.error("Error al cargar incidencias", err);
-      }
-    };
-    fetchData();
-  }, []);
+  
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await apiFetch("/listarincidencias/listar");
+      const data = await response.json();
+      setIncidencias(data);
+    } catch (err) {
+      console.error("Error al cargar incidencias", err);
+    }
+  };
+  fetchData();
+}, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedIncidencias = incidencias.slice(startIndex, startIndex + itemsPerPage);

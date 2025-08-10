@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import RoleSelector from "./RoleSelector";
 import PermissionManager from "./PermissionManager";
 import ModuleTreeDragDrop from "./ModuleTreeDragDrop";
-
+import { apiFetch } from "../../lib/api"; // 👈 importa tu helper
 
 interface Rol {
   id: string;
@@ -34,24 +34,17 @@ export default function AdministracionModules() {
   const [rolSeleccionado, setRolSeleccionado] = useState<string>("");
   const [cargandoAccesos, setCargandoAccesos] = useState(false);
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     const cargarDatosIniciales = async () => {
       try {
         const [resRoles, resPermisos] = await Promise.all([
-          fetch("http://localhost:5000/api/roles", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch("http://localhost:5000/api/permisos", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          apiFetch("/roles"),
+          apiFetch("/permisos"),
         ]);
-
         setRoles(await resRoles.json());
         setPermisos(await resPermisos.json());
       } catch (err) {
-        console.error(" Error cargando roles o permisos:", err);
+        console.error("Error cargando roles o permisos:", err);
       }
     };
 
@@ -64,16 +57,11 @@ export default function AdministracionModules() {
     const cargarAccesos = async () => {
       setCargandoAccesos(true);
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/accesos?rol_id=${rolSeleccionado}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await apiFetch(`/accesos?rol_id=${rolSeleccionado}`);
         const data = await res.json();
         setAccesos(data);
       } catch (err) {
-        console.error(" Error cargando accesos:", err);
+        console.error("Error cargando accesos:", err);
       } finally {
         setCargandoAccesos(false);
       }
@@ -81,6 +69,7 @@ export default function AdministracionModules() {
 
     cargarAccesos();
   }, [rolSeleccionado]);
+
 
  return (
   <section className="w-full px-1 py-1 space-y-6">

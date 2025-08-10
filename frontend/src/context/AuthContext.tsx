@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContextObject";
 import type { User } from "./AuthContextTypes";
+import { apiFetch } from "../lib/api"; // <- usa tu wrapper
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -23,18 +24,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem("token");
       if (!token) {
         if (user !== null) setUser(null);
-        setLoading(false);
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiFetch("/auth/me"); //  sin localhost
 
-      if (res.ok) {
-        const data = await res.json();
+      // intenta parsear con fallback
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : null;
+
+      if (res.ok && data) {
         setUser(data);
         localStorage.setItem("user", JSON.stringify(data));
+      } else if (res.status === 401) {
+        // token inválido/expirado
+        logout();
       } else {
         setUser(null);
       }

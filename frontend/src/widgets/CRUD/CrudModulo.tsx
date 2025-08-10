@@ -1,10 +1,10 @@
-// COMPONENTE CRUD MODULOS con asignación de permisos + botón Cancelar
 import { useEffect, useState } from "react";
 import { Input } from "../../components/ui/Input";
 import { Boton } from "../../components/ui/BotonPrincipal";
 import { toast } from "sonner";
 import { Plus, Trash2, Pencil, XCircle, Eye, Edit, Trash, PlusCircle } from "lucide-react";
 import clsx from "clsx";
+import { apiFetch } from "../../lib/api"; //  Ojo ruta corregida
 
 interface Modulo {
   id: string;
@@ -21,7 +21,6 @@ interface PermisoModulo {
   nombre: string;
 }
 
-const API = "http://localhost:5000/api";
 const PERMISOS_BASE = ["crear", "editar", "eliminar", "ver"];
 
 export default function CrudModulo() {
@@ -36,24 +35,29 @@ export default function CrudModulo() {
   });
   const [permisos, setPermisos] = useState<string[]>([]);
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     getModulos();
   }, []);
 
   const getModulos = async () => {
     try {
-      const res = await fetch(`${API}/modulos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiFetch("/modulos");
       if (!res.ok) throw new Error("Error en respuesta del servidor");
       const data = await res.json();
       setModulos(data);
     } catch (err) {
-      toast.error("Error al cargar módulos");
+      // El tipo de `err` en un bloque catch es `unknown` por defecto en TypeScript.
+      // Para usarlo de forma segura, es necesario verificar su tipo.
+      console.error("Error al cargar módulos:", err); // Log para depuración.
+      if (err instanceof Error) {
+        toast.error(`Error al cargar módulos: ${err.message}`);
+      } else {
+        toast.error("Ocurrió un error inesperado al cargar los módulos.");
+      }
     }
   };
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -73,33 +77,22 @@ export default function CrudModulo() {
     if (!form.nombre || !form.path) return toast.warning("Completa los campos obligatorios");
 
     const method = editing ? "PUT" : "POST";
-    const url = editing ? `${API}/modulos/${editing.id}` : `${API}/modulos`;
+    const url = editing ? `/modulos/${editing.id}` : "/modulos";
 
     try {
-      const resModulo = await fetch(url, {
+      const resModulo = await apiFetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(form),
       });
 
       if (!resModulo.ok) throw new Error();
       const modulo = await resModulo.json();
 
-      // Si es creación, insertar permisos
-      if (editing) {
-        await fetch(`${API}/modulos/${modulo.id}/permisos`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ permisos }),
-        });
-      }
-
+      // Si es creación o edición, asignar permisos
+      await apiFetch(`/modulos/${modulo.id}/permisos`, {
+        method: "POST",
+        body: JSON.stringify({ permisos }),
+      });
 
       toast.success(editing ? "Módulo actualizado." : "Módulo creado con permisos");
       getModulos();
@@ -134,10 +127,7 @@ export default function CrudModulo() {
         label: "Sí, eliminar",
         onClick: async () => {
           try {
-            const res = await fetch(`${API}/modulos/${id}`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await apiFetch(`/modulos/${id}`, { method: "DELETE" });
             if (!res.ok) throw new Error();
             toast.success("Módulo eliminado");
             getModulos();

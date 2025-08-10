@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { User, KeyRound } from "lucide-react";
 import yapeIcon from "/yape.webp";
 import plinIcon from "/plin.webp";
 import qrImage from "/qr-code.webp";
-import { User, KeyRound } from "lucide-react";
+import { apiFetch } from "../../lib/api"; // 👈 Importa tu helper
 
 export default function PlansActivateForm() {
   const [nombreUsuario, setNombreUsuario] = useState("");
@@ -13,29 +14,30 @@ export default function PlansActivateForm() {
   const [loading, setLoading] = useState(false);
 
   const handleActivacion = async () => {
-    if (!nombreUsuario || !codigoUsuario) {
-      toast.error("Completa ambos campos.");
+    if (!nombreUsuario.trim() || !codigoUsuario.trim()) {
+      toast.error("Completa ambos campos antes de continuar.");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/pagos/solicitar-activacion", {
+      const res = await apiFetch("/pagos/solicitar-activacion", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombreUsuario, codigoUsuario }),
       });
 
       const data = await res.json();
-      if (res.ok) {
-        toast.success("Solicitud enviada correctamente.");
-        setNombreUsuario("");
-        setCodigoUsuario("");
-      } else {
-        toast.error(data?.error || "Error en la activación");
+
+      if (!res.ok) {
+        toast.error(data?.error || "Error en la activación.");
+        return;
       }
-    } catch (error) {
-      toast.error("Error de conexión con el servidor.");
+
+      toast.success("Solicitud enviada correctamente.");
+      setNombreUsuario("");
+      setCodigoUsuario("");
+    } catch (error: any) {
+      toast.error(error?.message || "Error de conexión con el servidor.");
     } finally {
       setLoading(false);
     }

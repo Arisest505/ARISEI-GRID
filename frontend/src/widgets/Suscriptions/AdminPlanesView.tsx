@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Switch } from "@headlessui/react";
 import { Pencil, Plus, Save } from "lucide-react";
 import toast from "react-hot-toast";
+import { apiFetch } from "../../lib/api"; // 👈 usa tu helper
 
 interface Plan {
   id: string;
@@ -23,20 +24,11 @@ export default function AdminPlanesView() {
   const [editando, setEditando] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
-  // Nota: si el token puede cambiar en runtime, podrías moverlo a estado/contexto.
-  const token = localStorage.getItem("token");
-
   const fetchPlanes = useCallback(async () => {
     setCargando(true);
     try {
-      const res = await fetch("http://localhost:5000/api/planes", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const res = await apiFetch("/planes");
       if (!res.ok) throw new Error(await res.text());
-
       const data = await res.json();
       setPlanes(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -45,19 +37,12 @@ export default function AdminPlanesView() {
     } finally {
       setCargando(false);
     }
-  }, [token]);
+  }, []);
 
   const toggleActivo = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/planes/${id}/toggle`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const res = await apiFetch(`/planes/${id}/toggle`, { method: "PATCH" });
       if (!res.ok) throw new Error(await res.text());
-
       toast.success("Estado del plan actualizado.");
       fetchPlanes();
     } catch (err) {
@@ -67,24 +52,17 @@ export default function AdminPlanesView() {
   };
 
   const guardarNuevoPlan = async () => {
-    // Validación usando el objeto completo para evitar unused vars
     if (!nuevoPlan.nombre || nuevoPlan.precio <= 0 || nuevoPlan.duracion_meses <= 0) {
       toast.error("Completa todos los campos correctamente.");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/planes", {
+      const res = await apiFetch("/planes", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(nuevoPlan),
       });
-
       if (!res.ok) throw new Error(await res.text());
-
       toast.success("Plan creado con éxito.");
       setNuevoPlan({ nombre: "", descripcion: "", precio: 0, duracion_meses: 1 });
       fetchPlanes();
@@ -96,17 +74,11 @@ export default function AdminPlanesView() {
 
   const actualizarPlan = async (plan: Plan) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/planes/${plan.id}`, {
+      const res = await apiFetch(`/planes/${plan.id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(plan),
       });
-
       if (!res.ok) throw new Error(await res.text());
-
       toast.success("Plan actualizado.");
       setEditando(null);
       fetchPlanes();
@@ -119,6 +91,7 @@ export default function AdminPlanesView() {
   useEffect(() => {
     fetchPlanes();
   }, [fetchPlanes]);
+
 
   return (
     <section className="max-w-5xl px-4 py-10 mx-auto animate-fade-in">

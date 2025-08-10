@@ -6,30 +6,24 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { apiFetch } from "../../lib/api"; // 👈 usa tu helper
 
 interface Pago {
   id: string;
-  usuario: {
-    nombre: string;
-    correo: string;
-    codigo: string;
-  };
+  usuario: { nombre: string; correo: string; codigo: string };
   codigo_usuario_ingresado: string;
   monto_pagado: number;
   metodo_pago: string;
   fecha_pago: string;
   estado_pago: string;
   medio_verificado: boolean;
-  recibido_por_usuario?: {
-    nombre: string;
-  };
+  recibido_por_usuario?: { nombre: string };
 }
 
 export default function PaymentListSection() {
   const [pagos, setPagos] = useState<Pago[]>([]);
   const [loading, setLoading] = useState(false);
   const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchPagos();
@@ -38,15 +32,20 @@ export default function PaymentListSection() {
   const fetchPagos = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/pagos/completados", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("No autorizado.");
+      const res = await apiFetch("/pagos/completados");
+      if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error("Respuesta inválida.");
       setPagos(data);
     } catch (err) {
-      toast.error("Error al cargar pagos.");
+      // Es una buena práctica registrar el error completo para depuración.
+      console.error("Error al cargar pagos:", err);
+      // Verificamos si `err` es una instancia de `Error` para usar `.message` de forma segura.
+      if (err instanceof Error) {
+        toast.error(`Error al cargar pagos: ${err.message}`);
+      } else {
+        toast.error("Ocurrió un error inesperado al cargar los pagos.");
+      }
       setPagos([]);
     } finally {
       setLoading(false);
@@ -56,22 +55,24 @@ export default function PaymentListSection() {
   const confirmarPago = async (pagoId: string) => {
     setConfirmandoId(pagoId);
     try {
-      const res = await fetch(`http://localhost:5000/api/pagos/${pagoId}/confirmar`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error("No se pudo confirmar.");
+      const res = await apiFetch(`/pagos/${pagoId}/confirmar`, { method: "PATCH" });
+      if (!res.ok) throw new Error(await res.text());
       toast.success("Pago confirmado");
       await fetchPagos();
     } catch (err) {
-      toast.error("Error al confirmar pago");
+      console.error("Error al confirmar pago:", err);
+      if (err instanceof Error) {
+        // El mensaje de error vendrá del `await res.text()` si la API falla.
+        toast.error(`Error al confirmar pago: ${err.message}`);
+      } else {
+        toast.error("Ocurrió un error inesperado al confirmar el pago.");
+      }
     } finally {
       setConfirmandoId(null);
     }
   };
+
+ 
 
   const exportToExcel = () => {
     const data = pagos.map((p) => ({

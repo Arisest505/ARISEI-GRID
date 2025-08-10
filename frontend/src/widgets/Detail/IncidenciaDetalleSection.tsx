@@ -16,7 +16,7 @@ import {
   Users,
   BadgeCheck
 } from "lucide-react";
-
+import { apiFetch } from "../../lib/api"; 
 interface FamiliarData {
   nombre: string;
   dni: string;
@@ -76,19 +76,21 @@ export default function IncidenciaDetallePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDetalle = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/foro/incidencia/${id}`);
-        const data = await res.json();
-        setIncidencia(data);
-      } catch (err) {
-        console.error("Error al cargar la incidencia", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDetalle();
-  }, [id]);
+  const fetchDetalle = async () => {
+    try {
+      const res = await apiFetch(`/foro/incidencia/${id}`);
+      if (!res.ok) throw new Error("No se pudo cargar la incidencia");
+      const data = await res.json();
+      setIncidencia(data);
+    } catch (err) {
+      console.error("Error al cargar la incidencia", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchDetalle();
+}, [id]);
+
 
   if (loading) return <div className="p-6 text-center animate-pulse text-cyan-700">Cargando detalles...</div>;
   if (!incidencia) return <div className="p-6 text-center text-red-600">No se encontró la incidencia.</div>;

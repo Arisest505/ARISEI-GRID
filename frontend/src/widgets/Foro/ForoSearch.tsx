@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, Calendar, User, Landmark, IdCard } from "lucide-react";
+import { apiFetch } from "../../lib/api"; // ajusta la ruta según tu estructura
 
 interface Props {
   onSearch: (filters: {
@@ -58,7 +59,7 @@ export default function ForoSearch({ onSearch }: Props) {
     const timeout = setTimeout(() => {
       if (filters.colegio.length > 1) {
         setLoadingColegios(true);
-        fetch(`http://localhost:5000/api/autocomplete/colegios?q=${filters.colegio}`)
+        apiFetch(`/autocomplete/colegios?q=${filters.colegio}`)
           .then(res => res.json())
           .then(data => setSugerenciasColegios(data.map((d: any) => d.nombre)))
           .finally(() => setLoadingColegios(false));
@@ -71,7 +72,7 @@ export default function ForoSearch({ onSearch }: Props) {
     const timeout = setTimeout(() => {
       if (filters.autor.length > 1) {
         setLoadingAutores(true);
-        fetch(`http://localhost:5000/api/autocomplete/autores?q=${filters.autor}`)
+        apiFetch(`/autocomplete/autores?q=${filters.autor}`)
           .then(res => res.json())
           .then(data => setSugerenciasAutores(data.map((d: any) => d.nombre)))
           .finally(() => setLoadingAutores(false));
@@ -80,9 +81,10 @@ export default function ForoSearch({ onSearch }: Props) {
     return () => clearTimeout(timeout);
   }, [filters.autor]);
 
-   useEffect(() => {
+  useEffect(() => {
     onSearch(filters);
   }, [filters]);
+
 
   return (
      <form

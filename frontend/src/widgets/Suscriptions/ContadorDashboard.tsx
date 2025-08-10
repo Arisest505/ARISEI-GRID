@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
-import {
-  User,
-  LockKeyhole,
-  CreditCard,
-  CalendarDays,
-  Activity,
-} from "lucide-react";
+import { User, LockKeyhole, CreditCard, CalendarDays, Activity } from "lucide-react";
+import { apiFetch } from "../../lib/api"; //  usa tu helper
 
 interface Usuario {
   id: string;
@@ -31,25 +26,16 @@ interface Plan {
   duracion_meses: number;
 }
 
-const API_URL = "http://localhost:5000/api";
-const token = localStorage.getItem("token");
-
 export default function ContadorDashboard() {
   const [pagosPendientes, setPagosPendientes] = useState<PagoPendiente[]>([]);
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [seleccionPlanPorPago, setSeleccionPlanPorPago] = useState<{
-    [pagoId: string]: string;
-  }>({});
+  const [seleccionPlanPorPago, setSeleccionPlanPorPago] = useState<Record<string, string>>({});
 
   const fetchPendientes = async () => {
     try {
-      const res = await fetch(`${API_URL}/pagos/pendientes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error("No se pudieron obtener los pagos.");
+      const res = await apiFetch("/pagos/pendientes");
+      if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setPagosPendientes(data || []);
     } catch (err) {
@@ -60,12 +46,8 @@ export default function ContadorDashboard() {
 
   const fetchPlanes = async () => {
     try {
-      const res = await fetch(`${API_URL}/pagos/planes-disponibles`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error("No se pudieron obtener los planes.");
+      const res = await apiFetch("/pagos/planes-disponibles");
+      if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setPlanes(data || []);
     } catch (err) {
@@ -84,26 +66,17 @@ export default function ContadorDashboard() {
     cargarDatosIniciales();
   }, []);
 
-  const obtenerPlanPorId = (planId: string) =>
-    planes.find((plan) => plan.id === planId);
+  const obtenerPlanPorId = (planId: string) => planes.find((plan) => plan.id === planId);
 
-  const aprobarSolicitud = async (
-    pagoId: string,
-    usuarioId: string,
-    planId: string
-  ) => {
+  const aprobarSolicitud = async (pagoId: string, usuarioId: string, planId: string) => {
     if (!planId) {
       toast.error("Selecciona un plan antes de aprobar.");
       return;
     }
 
     try {
-      const res = await fetch(`${API_URL}/pagos/aprobar`, {
+      const res = await apiFetch("/pagos/aprobar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({ pagoId, usuarioId, planId }),
       });
 
@@ -111,7 +84,7 @@ export default function ContadorDashboard() {
 
       if (res.ok) {
         toast.success("Activación completada.");
-        fetchPendientes(); // recarga solo los pagos, no todo
+        fetchPendientes(); // recarga solo los pagos
       } else {
         toast.error(data?.error || "Error al aprobar el pago.");
       }
@@ -194,10 +167,7 @@ export default function ContadorDashboard() {
                   defaultValue=""
                   onChange={(e) => {
                     const selectedPlanId = e.target.value;
-                    setSeleccionPlanPorPago((prev) => ({
-                      ...prev,
-                      [pago.id]: selectedPlanId,
-                    }));
+                    setSeleccionPlanPorPago((prev) => ({ ...prev, [pago.id]: selectedPlanId }));
                     aprobarSolicitud(pago.id, pago.usuario.id, selectedPlanId);
                   }}
                   className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -207,8 +177,7 @@ export default function ContadorDashboard() {
                   </option>
                   {planes.map((plan) => (
                     <option key={plan.id} value={plan.id}>
-                      {plan.nombre} – S/ {plan.precio} ({plan.duracion_meses}{" "}
-                      meses)
+                      {plan.nombre} – S/ {plan.precio} ({plan.duracion_meses} meses)
                     </option>
                   ))}
                 </select>
@@ -216,15 +185,8 @@ export default function ContadorDashboard() {
                 {seleccionPlanPorPago[pago.id] && (
                   <div className="mt-2 text-sm text-cyan-700">
                     <span className="font-semibold">Precio: </span>
-                    S/{" "}
-                    {obtenerPlanPorId(seleccionPlanPorPago[pago.id])?.precio ||
-                      "—"}{" "}
-                    (
-                    {
-                      obtenerPlanPorId(seleccionPlanPorPago[pago.id])
-                        ?.duracion_meses || "?"
-                    }{" "}
-                    meses)
+                    S/ {obtenerPlanPorId(seleccionPlanPorPago[pago.id])?.precio ?? "—"} (
+                    {obtenerPlanPorId(seleccionPlanPorPago[pago.id])?.duracion_meses ?? "?"} meses)
                   </div>
                 )}
               </div>

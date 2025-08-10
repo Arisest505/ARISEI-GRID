@@ -5,44 +5,27 @@ import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { apiFetch } from "../../lib/api"; // 👈 usa tu helper
 
 interface Suscripcion {
   id: string;
-  usuario: {
-    nombre: string;
-    correo: string;
-    codigo: string;
-  };
-  plan: {
-    nombre: string;
-    precio: number;
-    duracion_meses: number;
-  };
+  usuario: { nombre: string; correo: string; codigo: string };
+  plan: { nombre: string; precio: number; duracion_meses: number };
   fecha_inicio: string;
   fecha_fin: string;
   estado: string;
-  activado_por_usuario?: {
-    nombre: string;
-  };
-  pago?: {
-    medio_verificado: boolean;
-  };
+  activado_por_usuario?: { nombre: string };
+  pago?: { medio_verificado: boolean };
 }
 
 export default function HistorialSuscripciones() {
   const [suscripciones, setSuscripciones] = useState<Suscripcion[]>([]);
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("token");
 
   const fetchSuscripciones = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/suscripciones/historial-verificadas", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const res = await apiFetch("/suscripciones/historial-verificadas");
       if (!res.ok) {
         const errorText = await res.text();
         console.error("[ERROR_FETCH_VERIFICADAS]", errorText);
@@ -68,6 +51,7 @@ export default function HistorialSuscripciones() {
       setLoading(false);
     }
   };
+
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
 import clsx from "clsx";
+import { toast } from "sonner";
+import { apiFetch } from "../../lib/api"; // 👈 usa tu helper
 
 interface Rol {
   id: string;
@@ -9,11 +11,8 @@ interface Rol {
 
 interface PermisoModulo {
   id: string;
-  nombre: string; // Ej: "Crear", "Editar", etc.
-  modulo: {
-    id: string;
-    nombre: string;
-  };
+  nombre: string;
+  modulo: { id: string; nombre: string };
 }
 
 interface Acceso {
@@ -36,18 +35,12 @@ export default function PermissionManager({
   onChange = () => {},
 }: Props) {
   const [estado, setEstado] = useState<Acceso[]>([]);
-  const token = localStorage.getItem("token");
-  const rol = roles[0]; // Se asume un solo rol seleccionado
+  const rol = roles[0]; // se asume un solo rol seleccionado
 
-  // Agrupar permisos por módulo
+  // agrupa permisos por módulo
   const permisosPorModulo = permisos.reduce((acc, permiso) => {
     const modId = permiso.modulo.id;
-    if (!acc[modId]) {
-      acc[modId] = {
-        nombre: permiso.modulo.nombre,
-        permisos: [],
-      };
-    }
+    if (!acc[modId]) acc[modId] = { nombre: permiso.modulo.nombre, permisos: [] as PermisoModulo[] };
     acc[modId].permisos.push(permiso);
     return acc;
   }, {} as Record<string, { nombre: string; permisos: PermisoModulo[] }>);
@@ -62,26 +55,30 @@ export default function PermissionManager({
   const toggleAcceso = (permisoId: string) => {
     if (!rol) return;
     setEstado((prev) => {
-      const idx = prev.findIndex(
-        (a) => a.rol_id === rol.id && a.permiso_modulo_id === permisoId
-      );
+      const prevSnapshot = [...prev]; // para rollback
+      const idx = prev.findIndex((a) => a.rol_id === rol.id && a.permiso_modulo_id === permisoId);
       const nuevos = [...prev];
 
+      let actualizado: Acceso;
       if (idx >= 0) {
-        nuevos[idx] = {
+        actualizado = {
           ...nuevos[idx],
           acceso_otorgado: !nuevos[idx].acceso_otorgado,
         };
-        actualizarBackend(nuevos[idx]);
+        nuevos[idx] = actualizado;
       } else {
-        const nuevo: Acceso = {
+        actualizado = {
           rol_id: rol.id,
           permiso_modulo_id: permisoId,
           acceso_otorgado: true,
         };
-        nuevos.push(nuevo);
-        actualizarBackend(nuevo);
+        nuevos.push(actualizado);
       }
+
+      // fire & forget con manejo de errores y rollback
+      actualizarBackend(actualizado).catch(() => {
+        setEstado(prevSnapshot); // revertimos
+      });
 
       onChange(nuevos);
       return nuevos;
@@ -90,30 +87,29 @@ export default function PermissionManager({
 
   const actualizarBackend = async (nuevo: Acceso) => {
     try {
-      const res = await fetch("http://localhost:5000/api/accesos/update-uno", {
+      const res = await apiFetch("/accesos/update-uno", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(nuevo),
       });
 
       if (!res.ok) {
-        console.error("❌ Error al actualizar:", await res.text());
+        const text = await res.text();
+        toast.error(text || "No se pudo guardar el acceso.");
+        throw new Error(text || "HTTP error");
       }
-    } catch (error) {
-      console.error("❌ Error de red:", error);
+
+      // opcional: un toast discreto en éxito
+      toast.success("Permiso actualizado.");
+    } catch (error: any) {
+      toast.error(error?.message || "Error de red al guardar el permiso.");
+      throw error;
     }
   };
 
   return (
     <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
       {Object.entries(permisosPorModulo).map(([moduloId, { nombre, permisos }]) => (
-        <div
-          key={moduloId}
-          className="flex flex-col gap-3 p-4 bg-white border rounded-lg shadow-sm"
-        >
+        <div key={moduloId} className="flex flex-col gap-3 p-4 bg-white border rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800">{nombre}</h3>
           <div className="flex flex-wrap gap-2">
             {permisos.map((permiso) => {

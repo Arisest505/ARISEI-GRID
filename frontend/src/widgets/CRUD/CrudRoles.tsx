@@ -4,6 +4,7 @@ import { Input } from "../../components/ui/Input";
 import { Boton } from "../../components/ui/BotonPrincipal";
 import { toast } from "sonner";
 import { Plus, Trash2, Pencil, XCircle } from "lucide-react";
+import { apiFetch } from "../../lib/api";
 
 interface Rol {
   id: string;
@@ -11,14 +12,10 @@ interface Rol {
   descripcion?: string;
 }
 
-const API = "http://localhost:5000/api";
-
 export default function CrudRol() {
   const [roles, setRoles] = useState<Rol[]>([]);
   const [editing, setEditing] = useState<Rol | null>(null);
   const [form, setForm] = useState<Omit<Rol, "id">>({ nombre: "", descripcion: "" });
-
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     getRoles();
@@ -26,14 +23,21 @@ export default function CrudRol() {
 
   const getRoles = async () => {
     try {
-      const res = await fetch(`${API}/roles`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiFetch("/roles");
       if (!res.ok) throw new Error("Error al obtener roles");
       const data = await res.json();
       setRoles(data);
     } catch (err) {
-      toast.error("No se pudieron cargar los roles.");
+            // Es una buena práctica registrar el error completo en la consola para depuración.
+      console.error("Error al cargar roles:", err);
+      // En TypeScript, `err` en un bloque catch es de tipo `unknown`.
+      // Verificamos si es una instancia de `Error` para acceder a `.message` de forma segura.
+      if (err instanceof Error) {
+        toast.error(`Error al cargar roles: ${err.message}`);
+      } else {
+        toast.error("Ocurrió un error inesperado al cargar los roles.");
+      }
+
     }
   };
 
@@ -46,15 +50,11 @@ export default function CrudRol() {
     if (!form.nombre) return toast.warning("El nombre es obligatorio.");
 
     const method = editing ? "PUT" : "POST";
-    const url = editing ? `${API}/roles/${editing.id}` : `${API}/roles`;
+    const url = editing ? `/roles/${editing.id}` : "/roles";
 
     try {
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error();
@@ -82,10 +82,7 @@ export default function CrudRol() {
         label: "Sí, eliminar",
         onClick: async () => {
           try {
-            const res = await fetch(`${API}/roles/${id}`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await apiFetch(`/roles/${id}`, { method: "DELETE" });
             if (!res.ok) throw new Error();
             toast.success("Rol eliminado");
             getRoles();

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import TermsAndConditionsSection from "./TermsAndConditionsSection";
 import { toast } from "sonner";
+import { apiFetch } from "../../lib/api"; // Ajusta la ruta según tu estructura
 
 export default function RegisterSection({ onSwitch }: { onSwitch: () => void }) {
   const [formData, setFormData] = useState({
@@ -58,34 +59,32 @@ export default function RegisterSection({ onSwitch }: { onSwitch: () => void }) 
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          dni: formData.dni,
-          phone: formData.phone,
-          user: formData.user,
-        }),
-      });
+  try {
+    const res = await apiFetch("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dni: formData.dni,
+        phone: formData.phone,
+        user: formData.user,
+      }),
+    });
 
-      const result = await response.json();
-      if (response.ok) {
-        toast.success("Usuario registrado correctamente.");
-        onSwitch(); // redirige a login
-      } else {
-        toast.error(result.error || "Error en el registro.");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      toast.error("Error al conectar con el servidor.");
+    const result = await res.json();
+
+    if (res.ok) {
+      toast.success("Usuario registrado correctamente.");
+      onSwitch(); // redirige a login
+    } else {
+      toast.error(result?.error || "Error en el registro.");
     }
+  } catch (err) {
+    console.error("Error:", err);
+    toast.error("Error al conectar con el servidor.");
+  }
   };
 
   return (
