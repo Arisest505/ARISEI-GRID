@@ -4,7 +4,7 @@ import { Settings2, Users2, Lightbulb } from "lucide-react";
 const versions = [
   {
     version: "v1.0.0",
-    date: "12 Jul 2025",
+    date: "11 Agosto 2025",
     author: "ARISEI",
     icon: <Users2 className="w-6 h-6 text-cyan-600" />,
     title: "Lanzamiento inicial",
@@ -13,8 +13,8 @@ const versions = [
     borderColor: "border-cyan-600",
   },
   {
-    version: "v1.1.0",
-    date: "25 Ago 2025",
+    version: "v1.0.1",
+    date: "11 Agosto 2025",
     author: "ARISEI",
     icon: <Settings2 className="w-6 h-6 text-violet-600" />,
     title: "Gestión institucional",
@@ -23,13 +23,13 @@ const versions = [
     borderColor: "border-violet-600",
   },
   {
-    version: "v1.2.0",
-    date: "10 Sep 2025",
+    version: "v1.1.7",
+    date: "11 Agosto 2025",
     author: "ARISEI",
     icon: <Lightbulb className="w-6 h-6 text-yellow-500" />,
     title: "Detección inteligente",
     description:
-      "Se implementó un sistema con IA para detectar patrones de fraude académico y reincidencia en deudas entre estudiantes.",
+      "Se implementó Carga Masiva de Incidencias para facilitar las subidas de información de forma masiva a la plataforma.",
     borderColor: "border-yellow-500",
   },
 ];

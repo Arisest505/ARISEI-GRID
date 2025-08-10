@@ -27,7 +27,7 @@ interface PlanCard {
 
 const SUPPORT = {
   phone: "+51 902 280 461",
-  email: "arisescrp@gmail.com",
+  email: "incidenetsuport@gmail.com",
   anchorId: "contacts", // id del bloque de contacto en el footer/página de Contacto
 };
 

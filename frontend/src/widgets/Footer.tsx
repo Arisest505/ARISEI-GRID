@@ -22,9 +22,9 @@ export default function Footer() {
         >
           <div className="p-3 shadow-sm">
             <img
-              src="/LogoBlancoIncideNETFont.svg"
+              src="/LogoBlanco_SOLOLOGO_IncideNETFont.svg"
               alt="Logo ARISEI"
-              className="w-[200px] h-[auto] object-contain"
+              className="w-[64px] h-[auto] object-contain"
             />
           </div>
           <h4 className="text-lg font-bold text-white">IncideNET by ARISEI</h4>
@@ -44,7 +44,7 @@ export default function Footer() {
           <h5 className="mb-2 text-base font-bold text-white">Contacto</h5>
           <p className="flex items-center justify-center gap-2 md:justify-start">
             <Mail size={18} className="text-white" />
-            arisescrp@gmail.com
+            incidenetsuport@gmail.com
           </p>
           <p className="flex items-center justify-center gap-2 md:justify-start">
             <Phone size={18} className="text-white" />
