@@ -94,7 +94,7 @@ export default function CrearIncidenciaWizard() {
     <section
       className="relative min-h-screen py-20 bg-center bg-no-repeat bg-cover"
       style={{
-        backgroundImage: "url('/01sdasgtkyukjgh.jpg')",
+        backgroundImage: "url('/01sdasgtkyukjgh.webp')",
       }}
       id="crear-incidencia"
     >

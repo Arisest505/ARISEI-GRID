@@ -2,7 +2,7 @@ export default function CargaMasivaHeroSection() {
   return (
     <section className="relative py-40 shadow-md rounded-xl animate-fade-in">
       <img
-        src="/02knhkjndjnf65f6d.jpg" //  Reemplaza con tu ruta real
+        src="/02knhkjndjnf65f6d.webp" //  Reemplaza con tu ruta real
         alt="Carga Masiva"
         className="absolute inset-0 object-cover w-full h-full"
       />

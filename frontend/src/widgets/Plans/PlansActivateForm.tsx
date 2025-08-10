@@ -6,7 +6,7 @@ import { User, KeyRound } from "lucide-react";
 import yapeIcon from "/yape.webp";
 import plinIcon from "/plin.webp";
 import qrImage from "/qr-code.webp";
-import { apiFetch } from "../../lib/api"; // 👈 Importa tu helper
+import { apiFetch } from "../../lib/api"; //  Importa tu helper
 
 export default function PlansActivateForm() {
   const [nombreUsuario, setNombreUsuario] = useState("");
