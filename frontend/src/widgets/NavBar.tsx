@@ -167,7 +167,7 @@ export default function NavBar() {
             </button>
           ) : (
             <button
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/")}
               className="px-4 py-2 text-sm font-semibold text-white transition rounded-lg shadow-md bg-cyan-500 hover:bg-cyan-600"
               style={{ transitionDuration: "var(--trs)" }}
             >
@@ -317,7 +317,7 @@ export default function NavBar() {
               </button>
             ) : (
               <button
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate("/")}
                 className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm font-semibold text-white transition rounded-md bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
                 style={{ transitionDuration: "var(--trs)" }}
               >
