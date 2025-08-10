@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
-
+import { apiFetch } from "../../lib/api";
 export default function LoginSection({ onSwitch }: { onSwitch: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,11 +20,10 @@ export default function LoginSection({ onSwitch }: { onSwitch: () => void }) {
     setMessage(null);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+     const res = await apiFetch("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
 
       const data = await res.json();
 
