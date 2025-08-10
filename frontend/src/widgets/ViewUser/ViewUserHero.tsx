@@ -5,7 +5,7 @@ export default function ViewUserHero() {
     <section
       className="relative px-6 py-40 overflow-hidden text-white bg-center bg-cover md:px-16"
       style={{
-        backgroundImage: "url('/102lkanskjbasda5ds55d54a84sd584s5.jpg')", //  Reemplaza con tu imagen real
+        backgroundImage: "url('/102lkanskjbasda5ds55d54a84sd584s5.webp')", //  Reemplaza con tu imagen real
       }}
     >
       {/* Capa oscura + blur */}

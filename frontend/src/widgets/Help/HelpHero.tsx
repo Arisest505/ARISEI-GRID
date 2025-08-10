@@ -5,7 +5,7 @@ export default function HelpHero() {
     <section
       className="relative py-40 text-center text-black"
       style={{
-        backgroundImage: "url('/05asdsad2s1g61f65gfdg.jpg')",
+        backgroundImage: "url('/05asdsad2s1g61f65gfdg.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

@@ -5,7 +5,7 @@ export default function PlansHero() {
     <motion.section
       className="relative py-48 text-center text-cyan-400"
       style={{
-        backgroundImage: "url('/06aasdas45gf3232j3k23kj323.jpg')",
+        backgroundImage: "url('/06aasdas45gf3232j3k23kj323.webp')",
         backgroundSize: "cover",
         backgroundPosition: "bottom",
         backgroundRepeat: "no-repeat",

@@ -18,7 +18,7 @@ export default function ModuleHeroSection() {
       </div>
 
       {/* Fondo decorativo */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('/world-bg.svg')] bg-cover bg-center opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[url('/03sadsg45f4gfsfgsd.webp.svg')] bg-cover bg-center opacity-5 pointer-events-none" />
     </section>
   );
 }

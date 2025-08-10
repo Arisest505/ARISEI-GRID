@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section
       className="relative py-40 text-center text-black"
       style={{
-        backgroundImage: "url('/04aksjmlknkjbfg5h4j6h.jpg')",
+        backgroundImage: "url('/04aksjmlknkjbfg5h4j6h.webp')",
         backgroundSize: 'cover',
         backgroundPosition: 'right center',
       }}

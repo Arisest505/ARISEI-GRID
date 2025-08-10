@@ -8,9 +8,12 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Toaster } from "sonner";
 import ScrollToTop from "./components/ScrollToTop";
+import { Analytics } from "@vercel/analytics/next"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
+
   <React.StrictMode>
+    <Analytics />
     <DndProvider backend={HTML5Backend}>
       <AuthProvider>
         <BrowserRouter>

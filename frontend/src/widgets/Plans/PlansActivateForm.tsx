@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import yapeIcon from "/yape.png";
-import plinIcon from "/plin.jpg";
-import qrImage from "/qr-code.jpg";
+import yapeIcon from "/yape.webp";
+import plinIcon from "/plin.webp";
+import qrImage from "/qr-code.webp";
 import { User, KeyRound } from "lucide-react";
 
 export default function PlansActivateForm() {
