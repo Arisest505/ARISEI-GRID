@@ -4,7 +4,7 @@ export default function HeroCrud() {
     <section
       className="relative py-40 mb-10 overflow-hidden shadow-lg rounded-xl"
       style={{
-        backgroundImage: 'url("/03sadsg45f4gfsfgsd.jpg")',
+        backgroundImage: 'url("/03sadsg45f4gfsfgsd.webp")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

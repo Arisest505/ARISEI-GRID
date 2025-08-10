@@ -4,13 +4,14 @@
     "lib": ["ES2021"],
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "types": ["node"],            // <= IMPORTANTE: define tipos de Node (process, console, etc.)
     "outDir": "dist",
     "rootDir": "src",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "strict": true,
+    "strict": true,               // puedes mantener strict
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"], 
-  "exclude": ["node_modules", "dist", "prisma/**/*.ts"] 
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "prisma/**/*.ts"]
 }
