@@ -167,7 +167,7 @@ export default function NavBar() {
             </button>
           ) : (
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/auth")}
               className="px-4 py-2 text-sm font-semibold text-white transition rounded-lg shadow-md bg-cyan-500 hover:bg-cyan-600"
               style={{ transitionDuration: "var(--trs)" }}
             >
