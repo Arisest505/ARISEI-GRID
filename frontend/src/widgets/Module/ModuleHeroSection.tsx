@@ -1,5 +1,5 @@
 // src/widgets/Module/ModuleHeroSection.tsx
-import { ShieldCheck, LayoutGrid } from "lucide-react";
+import {  LayoutGrid } from "lucide-react";
 
 export default function ModuleHeroSection() {
   return (

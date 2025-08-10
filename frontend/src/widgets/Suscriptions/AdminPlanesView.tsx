@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Switch } from "@headlessui/react";
 import { Pencil, Plus, Save } from "lucide-react";
 import toast from "react-hot-toast";
@@ -22,9 +22,11 @@ export default function AdminPlanesView() {
   });
   const [editando, setEditando] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  // Nota: si el token puede cambiar en runtime, podrías moverlo a estado/contexto.
   const token = localStorage.getItem("token");
 
-  const fetchPlanes = async () => {
+  const fetchPlanes = useCallback(async () => {
     setCargando(true);
     try {
       const res = await fetch("http://localhost:5000/api/planes", {
@@ -36,14 +38,14 @@ export default function AdminPlanesView() {
       if (!res.ok) throw new Error(await res.text());
 
       const data = await res.json();
-      setPlanes(data || []);
+      setPlanes(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("[FETCH_PLANES_ERROR]", err);
       toast.error("Error al obtener planes.");
     } finally {
       setCargando(false);
     }
-  };
+  }, [token]);
 
   const toggleActivo = async (id: string) => {
     try {
@@ -65,9 +67,8 @@ export default function AdminPlanesView() {
   };
 
   const guardarNuevoPlan = async () => {
-    const { nombre, descripcion, precio, duracion_meses } = nuevoPlan;
-
-    if (!nombre || precio <= 0 || duracion_meses <= 0) {
+    // Validación usando el objeto completo para evitar unused vars
+    if (!nuevoPlan.nombre || nuevoPlan.precio <= 0 || nuevoPlan.duracion_meses <= 0) {
       toast.error("Completa todos los campos correctamente.");
       return;
     }
@@ -117,7 +118,7 @@ export default function AdminPlanesView() {
 
   useEffect(() => {
     fetchPlanes();
-  }, []);
+  }, [fetchPlanes]);
 
   return (
     <section className="max-w-5xl px-4 py-10 mx-auto animate-fade-in">
@@ -146,16 +147,30 @@ export default function AdminPlanesView() {
           <input
             type="number"
             placeholder="Precio"
-            value={nuevoPlan.precio}
-            onChange={(e) => setNuevoPlan({ ...nuevoPlan, precio: parseFloat(e.target.value) })}
+            min={0}
+            step="0.01"
+            value={Number.isFinite(nuevoPlan.precio) ? nuevoPlan.precio : 0}
+            onChange={(e) =>
+              setNuevoPlan({
+                ...nuevoPlan,
+                precio: Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
+              })
+            }
             className="px-3 py-2 border rounded"
           />
           <input
             type="number"
             placeholder="Duración (meses)"
-            value={nuevoPlan.duracion_meses}
+            min={1}
+            step="1"
+            value={Number.isFinite(nuevoPlan.duracion_meses) ? nuevoPlan.duracion_meses : 1}
             onChange={(e) =>
-              setNuevoPlan({ ...nuevoPlan, duracion_meses: parseInt(e.target.value) })
+              setNuevoPlan({
+                ...nuevoPlan,
+                duracion_meses: Number.isNaN(parseInt(e.target.value))
+                  ? 1
+                  : parseInt(e.target.value),
+              })
             }
             className="px-3 py-2 border rounded"
           />
@@ -168,6 +183,11 @@ export default function AdminPlanesView() {
         </button>
       </div>
 
+      {/* ESTADO DE CARGA */}
+      {cargando && (
+        <p className="mb-4 text-sm text-gray-600">Cargando planes...</p>
+      )}
+
       {/* LISTA DE PLANES */}
       <div className="space-y-4">
         {planes.map((plan) => (
@@ -178,9 +198,7 @@ export default function AdminPlanesView() {
                   value={plan.nombre}
                   onChange={(e) =>
                     setPlanes((prev) =>
-                      prev.map((p) =>
-                        p.id === plan.id ? { ...p, nombre: e.target.value } : p
-                      )
+                      prev.map((p) => (p.id === plan.id ? { ...p, nombre: e.target.value } : p))
                     )
                   }
                   className="px-3 py-2 border rounded"
@@ -198,12 +216,19 @@ export default function AdminPlanesView() {
                 />
                 <input
                   type="number"
+                  min={0}
+                  step="0.01"
                   value={plan.precio}
                   onChange={(e) =>
                     setPlanes((prev) =>
                       prev.map((p) =>
                         p.id === plan.id
-                          ? { ...p, precio: parseFloat(e.target.value) }
+                          ? {
+                              ...p,
+                              precio: Number.isNaN(parseFloat(e.target.value))
+                                ? 0
+                                : parseFloat(e.target.value),
+                            }
                           : p
                       )
                     )
@@ -212,12 +237,19 @@ export default function AdminPlanesView() {
                 />
                 <input
                   type="number"
+                  min={1}
+                  step="1"
                   value={plan.duracion_meses}
                   onChange={(e) =>
                     setPlanes((prev) =>
                       prev.map((p) =>
                         p.id === plan.id
-                          ? { ...p, duracion_meses: parseInt(e.target.value) }
+                          ? {
+                              ...p,
+                              duracion_meses: Number.isNaN(parseInt(e.target.value))
+                                ? 1
+                                : parseInt(e.target.value),
+                            }
                           : p
                       )
                     )
@@ -229,8 +261,7 @@ export default function AdminPlanesView() {
               <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
                 <div>
                   <p>
-                    <strong>{plan.nombre}</strong> — S/ {plan.precio} por{" "}
-                    {plan.duracion_meses} meses
+                    <strong>{plan.nombre}</strong> — S/ {plan.precio} por {plan.duracion_meses} meses
                   </p>
                   <p className="text-sm text-gray-600">{plan.descripcion}</p>
                 </div>
@@ -269,6 +300,10 @@ export default function AdminPlanesView() {
             )}
           </div>
         ))}
+
+        {!cargando && planes.length === 0 && (
+          <p className="text-sm text-gray-500">No hay planes registrados.</p>
+        )}
       </div>
     </section>
   );

@@ -16,30 +16,30 @@ export const crearIncidenciaCompleta = async (req: Request, res: Response) => {
     const personaCreada = await prisma.personaIncidencia.upsert({
       where: { dni: persona.dni },
       update: {
-        nombre_completo: persona.nombre_completo,
+        nombre_completo: persona.nombreCompleto,
         telefono: persona.telefono,
         correo: persona.correo,
-        imagen_url: persona.imagen_url,
-        notas_adicionales: persona.notas_adicionales,
+        imagen_url: persona.imagenUrl,
+        notas_adicionales: persona.notasAdicionales,
       },
       create: {
-        nombre_completo: persona.nombre_completo,
+        nombre_completo: persona.nombreCompleto,
         dni: persona.dni,
-        fecha_nacimiento: persona.fecha_nacimiento ? new Date(persona.fecha_nacimiento) : null,
+        fecha_nacimiento: persona.fechaNacimiento ? new Date(persona.fechaNacimiento) : null,
         genero: persona.genero,
         telefono: persona.telefono,
         correo: persona.correo,
-        imagen_url: persona.imagen_url,
-        notas_adicionales: persona.notas_adicionales,
+        imagen_url: persona.imagenUrl,
+        notas_adicionales: persona.notasAdicionales,
         creado_por_usuario_id: usuario_id,
       },
     });
 
     // 2. Crear o recuperar institución (solo si hay código modular)
     let institucionCreada = null;
-    if (institucion && institucion.codigo_modular) {
+    if (institucion && institucion.codigoModular) {
       institucionCreada = await prisma.institucion.upsert({
-        where: { codigo_modular: institucion.codigo_modular },
+        where: { codigo_modular: institucion.codigoModular },
         update: {
           nombre: institucion.nombre,
           tipo: institucion.tipo,
@@ -49,7 +49,7 @@ export const crearIncidenciaCompleta = async (req: Request, res: Response) => {
           nombre: institucion.nombre,
           tipo: institucion.tipo,
           ubicacion: institucion.ubicacion,
-          codigo_modular: institucion.codigo_modular,
+          codigo_modular: institucion.codigoModular,
           creado_por_id: usuario_id,
         },
       });
@@ -60,71 +60,70 @@ export const crearIncidenciaCompleta = async (req: Request, res: Response) => {
       data: {
         titulo: incidencia.titulo,
         descripcion: incidencia.descripcion,
-        tipo_incidencia: incidencia.tipo_incidencia,
-        monto_deuda: incidencia.monto_deuda ? Number(incidencia.monto_deuda) : null,
-        fecha_incidencia: incidencia.fecha_incidencia
-          ? new Date(incidencia.fecha_incidencia)
+        tipo_incidencia: incidencia.tipoIncidencia,
+        monto_deuda: incidencia.montoDeuda ? Number(incidencia.montoDeuda) : null,
+        fecha_incidencia: incidencia.fechaIncidencia
+          ? new Date(incidencia.fechaIncidencia)
           : new Date(),
-        estado_incidencia: incidencia.estado_incidencia || "Pendiente",
-        confidencialidad_nivel: incidencia.confidencialidad_nivel || "Privado",
-        adjuntos_url: incidencia.adjuntos_url || null,
+        estado_incidencia: incidencia.estadoIncidencia || "Pendiente",
+        confidencialidad_nivel: incidencia.confidencialidadNivel || "Privado",
+        adjuntos_url: incidencia.adjuntosUrl || null,
         persona_id: personaCreada.id,
         institucion_id: institucionCreada?.id || null,
         creado_por_usuario_id: usuario_id,
       },
     });
 
-   // 4. Crear familiares y vincularlos
+    // 4. Crear familiares y vincularlos
     for (const fam of familiares || []) {
-    if (!fam.dni || !fam.nombre || !fam.tipo_vinculo) continue;
+      if (!fam.dni || !fam.nombre || !fam.tipoVinculo) continue;
 
-    const familiar = await prisma.familiar.upsert({
+      const familiar = await prisma.familiar.upsert({
         where: { dni: fam.dni },
         update: {
-        nombre: fam.nombre,
-        telefono: fam.telefono,
-        correo: fam.correo,
+          nombre: fam.nombre,
+          telefono: fam.telefono,
+          correo: fam.correo,
         },
         create: {
-        dni: fam.dni,
-        nombre: fam.nombre,
-        telefono: fam.telefono || null,
-        correo: fam.correo || null,
+          dni: fam.dni,
+          nombre: fam.nombre,
+          telefono: fam.telefono || null,
+          correo: fam.correo || null,
         },
-    });
+      });
 
-    const vinculoExistente = await prisma.vinculoFamiliarPersona.findFirst({
+      const vinculoExistente = await prisma.vinculoFamiliarPersona.findFirst({
         where: {
-        familiar_id: familiar.id,
-        persona_id: personaCreada.id,
+          familiar_id: familiar.id,
+          persona_id: personaCreada.id,
         },
-    });
+      });
 
-    if (vinculoExistente) {
+      if (vinculoExistente) {
         await prisma.vinculoFamiliarPersona.update({
-        where: { id: vinculoExistente.id },
-        data: {
-            tipo_vinculo: fam.tipo_vinculo,
-        },
+          where: { id: vinculoExistente.id },
+          data: {
+            tipo_vinculo: fam.tipoVinculo,
+          },
         });
-    } else {
+      } else {
         await prisma.vinculoFamiliarPersona.create({
-        data: {
+          data: {
             familiar_id: familiar.id,
             persona_id: personaCreada.id,
-            tipo_vinculo: fam.tipo_vinculo,
-        },
+            tipo_vinculo: fam.tipoVinculo,
+          },
         });
-    }
+      }
     }
 
     return res.status(201).json({
-      mensaje: "✅ Incidencia registrada correctamente.",
+      mensaje: "Incidencia registrada correctamente.",
       incidencia_id: incidenciaCreada.id,
     });
   } catch (error) {
-    console.error("[❌ ERROR crearIncidenciaCompleta]", error);
+    console.error("[ERROR crearIncidenciaCompleta]", error);
     return res.status(500).json({ error: "Error interno al registrar la incidencia." });
   }
 };
-

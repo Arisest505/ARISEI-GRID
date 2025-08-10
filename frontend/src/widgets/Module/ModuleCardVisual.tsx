@@ -1,7 +1,15 @@
 import * as LucideIcons from "lucide-react";
 import clsx from "clsx";
+import type { LucideProps } from "lucide-react";
+import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 
+// Se crea un tipo que representa un componente de Lucide
+type LucideIconComponent = ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
 
+// Se filtra el objeto LucideIcons para obtener solo los componentes de iconos
+const validIcons = Object.fromEntries(
+  Object.entries(LucideIcons).filter(([, value]) => typeof value === 'object')
+) as Record<string, LucideIconComponent>;
 
 interface Props {
   nombre: string;
@@ -17,10 +25,10 @@ export default function ModuleCardVisual({
   activo,
   onToggle,
 }: Props) {
-  const Icon =
-    icono && icono in LucideIcons
-      ? LucideIcons[icono as keyof typeof LucideIcons]
-      : LucideIcons.LayoutGrid;
+  // Ahora la lógica de selección es segura
+  const IconComponent =
+    (icono && validIcons[icono as keyof typeof validIcons]) ||
+    validIcons.LayoutGrid;
 
   return (
     <div
@@ -33,7 +41,8 @@ export default function ModuleCardVisual({
       )}
     >
       <div className="flex items-center gap-2 truncate">
-        <Icon className="w-4 h-4 shrink-0" />
+        {/* Ahora IconComponent es un componente de React válido garantizado */}
+        <IconComponent className="w-4 h-4 shrink-0" />
         <span className="font-medium truncate">{nombre}</span>
       </div>
       <span

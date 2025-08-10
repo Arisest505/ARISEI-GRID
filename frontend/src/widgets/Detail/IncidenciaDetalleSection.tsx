@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   CalendarDays,
-  Landmark,
   MessageCircle,
   User,
   ArrowLeft,
@@ -18,14 +17,18 @@ import {
   BadgeCheck
 } from "lucide-react";
 
-interface Familiar {
-  id: string;
+interface FamiliarData {
   nombre: string;
   dni: string;
   telefono: string | null;
   correo: string | null;
+}
+
+interface Familiar {
+  id: string;
   tipo_vinculo: string;
   fecha_creacion: string;
+  familiar: FamiliarData;
 }
 
 interface Institucion {
@@ -140,14 +143,31 @@ export default function IncidenciaDetallePage() {
           <h3 className="flex items-center gap-2 mt-8 mb-3 font-semibold text-md text-cyan-600">
             <Users className="w-5 h-5" /> Familiares</h3>
           <div className="grid gap-4 md:grid-cols-2" >
-            {incidencia.persona.vinculos.map((v) => (
-              <div key={v.id} className="p-4 text-black border shadow-sm bg-gray-50 rounded-xl ">
-                <p><BadgeCheck className="inline w-4 h-4 mr-1 text-cyan-700" /> <strong>{v.familiar.nombre}</strong> ({v.tipo_vinculo})</p>
-                <p><IdCard className="inline w-4 h-4 mr-1" /> DNI: {v.familiar.dni}</p>
-                {v.familiar.telefono && <p><Phone className="inline w-4 h-4 mr-1" /> {v.familiar.telefono}</p>}
-                {v.familiar.correo && <p><Mail className="inline w-4 h-4 mr-1" /> {v.familiar.correo}</p>}
-              </div>
-            ))}
+          {incidencia.persona.vinculos.map((v) => (
+            <div key={v.id} className="p-4 text-black border shadow-sm bg-gray-50 rounded-xl ">
+              {v.familiar?.nombre && (
+                <p>
+                  <BadgeCheck className="inline w-4 h-4 mr-1 text-cyan-700" /> 
+                  <strong>{v.familiar.nombre}</strong> ({v.tipo_vinculo})
+                </p>
+              )}
+              {v.familiar?.dni && (
+                <p>
+                  <IdCard className="inline w-4 h-4 mr-1" /> DNI: {v.familiar.dni}
+                </p>
+              )}
+              {v.familiar?.telefono && (
+                <p>
+                  <Phone className="inline w-4 h-4 mr-1" /> {v.familiar.telefono}
+                </p>
+              )}
+              {v.familiar?.correo && (
+                <p>
+                  <Mail className="inline w-4 h-4 mr-1" /> {v.familiar.correo}
+                </p>
+              )}
+            </div>
+          ))}
           </div>
         </>
       )}

@@ -1,47 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { AuthContext } from "./AuthContextObject";
+import type { User } from "./AuthContextTypes";
 
-// Tipos
-interface PermisoModulo {
-  permiso: string;
-  modulo: string;
-  path: string;
-  icono: string;
-}
-
-interface PlanActivo {
-  nombre: string;
-  fecha_inicio: string;
-  fecha_fin: string;
-}
-
-interface User {
-  id: string;
-  nombre: string;
-  email: string;
-  rol: string;
-  codigo_usuario: string;
-  permisos: PermisoModulo[];
-  plan_activo: PlanActivo | null;
-}
-
-interface AuthContextType {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
-  loading: boolean;
-  reloadUser: () => void;
-}
-
-// Crear contexto
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Proveedor
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +15,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    // Ya no usamos window.location.href
   };
 
   const reloadUser = async () => {
@@ -64,6 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem("token");
       if (!token) {
         if (user !== null) setUser(null);
+        setLoading(false);
         return;
       }
 
@@ -88,6 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     reloadUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -95,11 +56,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Hook
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth debe usarse dentro de AuthProvider");
-  return context;
 };

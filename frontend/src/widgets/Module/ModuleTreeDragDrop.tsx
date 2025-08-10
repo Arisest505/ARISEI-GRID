@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
-import clsx from "clsx";
 import * as LucideIcons from "lucide-react";
+import type { LucideProps } from "lucide-react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
+
+// 1. Define a type for a Lucide icon component.
+type LucideIconComponent = ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
+
+// 2. Create a safe, type-guarded object containing only valid icon components.
+const validIcons = Object.fromEntries(
+  Object.entries(LucideIcons).filter(
+    // Filter out non-component values like createLucideIcon
+    ([, value]) => typeof value === 'object' && '$$typeof' in value
+  )
+) as Record<string, LucideIconComponent>;
 
 interface Modulo {
   id: string;
@@ -65,7 +77,7 @@ export default function ModuleTreeDragDrop({
           permitido: tieneAcceso,
         };
       })
-      .filter((item) => item.permitido); // Solo módulos realmente permitidos
+      .filter((item) => item.permitido);
 
     setModulosDelRol(modulosCalculados);
   }, [permisos, accesos, rolSeleccionado]);
@@ -75,7 +87,10 @@ export default function ModuleTreeDragDrop({
       <h2 className="text-xl font-bold text-cyan-700">Módulos Permitidos</h2>
 
       {modulosDelRol.map(({ modulo }) => {
-        const IconComponent = LucideIcons[modulo.icono as keyof typeof LucideIcons];
+        // 3. Access the icon from the safe `validIcons` object.
+        const IconComponent = modulo.icono
+          ? validIcons[modulo.icono]
+          : validIcons.LayoutGrid;
 
         return (
           <div

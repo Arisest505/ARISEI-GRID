@@ -6,19 +6,26 @@ import {
   Mail,
   School,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Phone,
+  MapPin,
+  KeyRound,
+  Link2,
+  ShieldCheck,
+  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import type { PersonaData, InstitucionData, IncidenciaData, FamiliarVinculoData } from "@/types/FormData";
 
 interface Props {
-  persona: any;
-  institucion: any;
-  incidencia: any;
-  familiares: any[];
+  persona: PersonaData;
+  institucion: InstitucionData;
+  incidencia: IncidenciaData;
+  familiares: FamiliarVinculoData[];
   onPublicar: () => Promise<void>;
   loading: boolean;
+  onBack: () => void;
 }
 
 export default function ResumenIncidenciaStep({
@@ -29,17 +36,28 @@ export default function ResumenIncidenciaStep({
   onPublicar,
   loading,
 }: Props) {
-  const navigate = useNavigate(); // Instanciado dentro del componente
+  const navigate = useNavigate();
 
   const handlePublicarConAlerta = async () => {
-    toast.loading("Publicando incidencia...");
+    // 1. Guardamos la referencia del toast de carga
+    const toastId = toast.loading("Publicando incidencia...");
+    
     try {
+      // 2. Ejecutamos la función de publicación
       await onPublicar();
+      
+      // 3. Si tiene éxito, cerramos el toast de carga y mostramos el de éxito
+      toast.dismiss(toastId);
       toast.success("Incidencia publicada con éxito y visible en el foro.");
+      
+      // 4. Redirigimos después de un breve delay para que el usuario vea el mensaje
       setTimeout(() => {
-        navigate("/foro"); // Redirección
+        navigate("/foro");
       }, 1000);
-    } catch (error) {
+      
+    } catch {
+      // 5. En caso de error, también cerramos el toast de carga y mostramos un error
+      toast.dismiss(toastId);
       toast.error("No se pudo publicar la incidencia. Intenta nuevamente.");
     }
   };
@@ -59,8 +77,18 @@ export default function ResumenIncidenciaStep({
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
               <li><IdCard className="inline w-4 h-4 mr-1" /> <strong>DNI:</strong> {persona.dni}</li>
-              <li><User className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {persona.nombre_completo}</li>
+              <li><User className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {persona.nombreCompleto}</li>
               <li><Mail className="inline w-4 h-4 mr-1" /> <strong>Correo:</strong> {persona.correo || "No especificado"}</li>
+              <li><Phone className="inline w-4 h-4 mr-1" /> <strong>Teléfono:</strong> {persona.telefono || "No especificado"}</li>
+              {persona.fechaNacimiento && (
+                <li><Calendar className="inline w-4 h-4 mr-1" /> <strong>Nacimiento:</strong> {new Date(persona.fechaNacimiento).toLocaleDateString()}</li>
+              )}
+              {persona.genero && (
+                <li><User className="inline w-4 h-4 mr-1" /> <strong>Género:</strong> {persona.genero}</li>
+              )}
+              {persona.notasAdicionales && (
+                <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Notas:</strong> {persona.notasAdicionales}</li>
+              )}
             </ul>
           </section>
 
@@ -70,9 +98,10 @@ export default function ResumenIncidenciaStep({
               <School className="w-5 h-5" /> Institución
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
-              <li><strong>Nombre:</strong> {institucion.nombre}</li>
-              <li><strong>Tipo:</strong> {institucion.tipo}</li>
-              <li><strong>Código Modular:</strong> {institucion.codigo_modular || "N/A"}</li>
+              <li><School className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {institucion.nombre}</li>
+              <li><MapPin className="inline w-4 h-4 mr-1" /> <strong>Ubicación:</strong> {institucion.ubicacion || "N/A"}</li>
+              <li><ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong> {institucion.tipo}</li>
+              <li><KeyRound className="inline w-4 h-4 mr-1" /> <strong>Código Modular:</strong> {institucion.codigoModular || "N/A"}</li>
             </ul>
           </section>
 
@@ -82,12 +111,14 @@ export default function ResumenIncidenciaStep({
               <FileText className="w-5 h-5" /> Datos de la Incidencia
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
-              <li><strong>Título:</strong> {incidencia.titulo}</li>
-              <li><strong>Tipo:</strong> {incidencia.tipo_incidencia}</li>
-              <li><strong>Estado:</strong> {incidencia.estado_incidencia}</li>
-              <li><strong>Confidencialidad:</strong> {incidencia.confidencialidad_nivel}</li>
-              <li><strong>Fecha:</strong> {new Date(incidencia.fecha_incidencia).toLocaleDateString()}</li>
-              <li><strong>Descripción:</strong> {incidencia.descripcion}</li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Título:</strong> {incidencia.titulo}</li>
+              <li><AlertCircle className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong> {incidencia.tipoIncidencia}</li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Monto Deuda:</strong> {incidencia.montoDeuda || "No aplica"}</li>
+              <li><CheckCircle className="inline w-4 h-4 mr-1" /> <strong>Estado:</strong> {incidencia.estadoIncidencia}</li>
+              <li><ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Confidencialidad:</strong> {incidencia.confidencialidadNivel}</li>
+              <li><Calendar className="inline w-4 h-4 mr-1" /> <strong>Fecha:</strong> {new Date(incidencia.fechaIncidencia).toLocaleDateString()}</li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Descripción:</strong> {incidencia.descripcion}</li>
+              <li><Link2 className="inline w-4 h-4 mr-1" /> <strong>Adjuntos:</strong> {incidencia.adjuntosUrl ? "Sí" : "No"}</li>
             </ul>
           </section>
 
@@ -98,7 +129,14 @@ export default function ResumenIncidenciaStep({
               <ul className="pl-5 space-y-1 text-sm text-gray-800 list-disc">
                 {familiares.map((f, idx) => (
                   <li key={idx}>
-                    <strong>{f.nombre}</strong> ({f.tipo_vinculo}) – DNI: {f.dni}
+                    <User className="inline w-4 h-4 mr-1" />
+                    <strong>{f.nombre}</strong> ({f.tipoVinculo}) <IdCard className="inline w-4 h-4 mx-1" /> DNI: {f.dni}
+                    {f.telefono && (
+                      <> <Phone className="inline w-4 h-4 mx-1" /> {f.telefono} </>
+                    )}
+                    {f.correo && (
+                      <> <Mail className="inline w-4 h-4 mx-1" /> {f.correo} </>
+                    )}
                   </li>
                 ))}
               </ul>

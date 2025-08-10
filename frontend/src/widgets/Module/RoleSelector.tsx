@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import { ShieldCheck, ShieldOff, ShieldAlert, Activity } from "lucide-react";
+import { ShieldCheck, ShieldOff,  Activity } from "lucide-react";
 
 interface Rol {
   id: string;

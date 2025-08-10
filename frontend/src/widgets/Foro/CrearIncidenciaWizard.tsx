@@ -6,82 +6,85 @@ import FamiliaresForm from "./CrearIncidencia/Pasos/FamiliaresForm";
 import ResumenFinal from "./CrearIncidencia/Pasos/ResumenFinal";
 
 // Tipos
-import type {
-  PersonaData,
-  InstitucionData,
-  IncidenciaData,
-  FamiliarVinculoData,
-} from "@/types/FormData";
+import type { CrearIncidenciaFormData } from "@/types/FormData";
 
-// Suponemos que tienes algo como esto para obtener el usuario:
+// Hook de autenticación
 import { useAuth } from "../../hooks/useAuth";
 
-const initialPersona: PersonaData = {
-  nombre_completo: "",
-  dni: "",
-  fecha_nacimiento: "",
-  genero: "",
-  telefono: "",
-  correo: "",
-  imagen_url: "",
-  notas_adicionales: "",
-};
-
-const initialInstitucion: InstitucionData = {
-  nombre: "",
-  tipo: "",
-  ubicacion: "",
-  codigo_modular: "",
-};
-
-const initialIncidencia: IncidenciaData = {
-  titulo: "",
-  descripcion: "",
-  tipo_incidencia: "",
-  monto_deuda: "",
-  fecha_incidencia: "",
-  estado_incidencia: "Pendiente",
-  confidencialidad_nivel: "Privado",
-  adjuntos_url: "",
+// Estado inicial del formulario completo, coincidiendo con los tipos
+const initialFormData: CrearIncidenciaFormData = {
+  persona: {
+    nombreCompleto: "",
+    dni: "",
+    fechaNacimiento: "",
+    genero: "",
+    telefono: "",
+    correo: "",
+    imagenUrl: "",
+    notasAdicionales: "",
+  },
+  institucion: {
+    nombre: "",
+    tipo: "",
+    ubicacion: "",
+    codigoModular: "",
+  },
+  incidencia: {
+    titulo: "",
+    descripcion: "",
+    tipoIncidencia: "",
+    montoDeuda: "",
+    fechaIncidencia: "",
+    estadoIncidencia: "Pendiente",
+    confidencialidadNivel: "Privado",
+    adjuntosUrl: "",
+  },
+  familiares: [],
 };
 
 export default function CrearIncidenciaWizard() {
   const [step, setStep] = useState(1);
-  const [persona, setPersona] = useState<PersonaData>(initialPersona);
-  const [institucion, setInstitucion] = useState<InstitucionData>(initialInstitucion);
-  const [incidencia, setIncidencia] = useState<IncidenciaData>(initialIncidencia);
-  const [familiares, setFamiliares] = useState<FamiliarVinculoData[]>([]);
+  const [formData, setFormData] = useState<CrearIncidenciaFormData>(initialFormData);
   const [loading, setLoading] = useState(false);
-  
-const { user } = useAuth();
+  const { user } = useAuth();
 
   const next = () => setStep((prev) => Math.min(prev + 1, 5));
   const back = () => setStep((prev) => Math.max(prev - 1, 1));
-  
 
+  // Función para actualizar el estado del formulario de manera parcial
+  const updateFormData = (newData: Partial<CrearIncidenciaFormData>) => {
+    setFormData((prev) => ({ ...prev, ...newData }));
+  };
 
   const handlePublicar = async () => {
+    // Aquí puedes incluir cualquier validación final antes de enviar
+    if (!user?.id) {
+      throw new Error("No se pudo obtener el ID de usuario.");
+    }
+
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/incidencias/crear", { // usa el puerto donde corre tu backend
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    persona,
-    institucion,
-    incidencia,
-    familiares,
-    usuario_id: user?.id,
-  }),
-});
+      // Usar variable de entorno para la URL de la API
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      if (!backendUrl) {
+          throw new Error("VITE_BACKEND_URL no está definida.");
+      }
+      
+      const response = await fetch(`${backendUrl}/api/incidencias/crear`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData, // Usamos el estado consolidado
+          usuarioId: user.id, // Corregido a camelCase para consistencia
+        }),
+      });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error inesperado del servidor.");
+      }
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Error inesperado");
-
-    } catch (err) {
-      console.error(err);
-      alert(" Error al publicar la incidencia");
+      await response.json();
     } finally {
       setLoading(false);
     }
@@ -106,9 +109,9 @@ const { user } = useAuth();
         <div className="p-6 transition-all duration-500 bg-white border shadow-2xl rounded-xl border-slate-200 animate-fade-in">
           {step === 1 && (
             <PersonaIncidenciaForm
-              initialData={persona}
+              initialData={formData.persona}
               onNext={(data) => {
-                setPersona(data);
+                updateFormData({ persona: data });
                 next();
               }}
             />
@@ -116,10 +119,10 @@ const { user } = useAuth();
 
           {step === 2 && (
             <InstitucionForm
-              initialData={institucion}
+              initialData={formData.institucion}
               onBack={back}
               onNext={(data) => {
-                setInstitucion(data);
+                updateFormData({ institucion: data });
                 next();
               }}
             />
@@ -127,10 +130,10 @@ const { user } = useAuth();
 
           {step === 3 && (
             <DatosIncidenciaForm
-              data={incidencia}
+              data={formData.incidencia}
               onBack={back}
               onNext={(data) => {
-                setIncidencia(data);
+                updateFormData({ incidencia: data });
                 next();
               }}
             />
@@ -138,10 +141,10 @@ const { user } = useAuth();
 
           {step === 4 && (
             <FamiliaresForm
-              data={familiares}
+              data={formData.familiares}
               onBack={back}
               onNext={(data) => {
-                setFamiliares(data);
+                updateFormData({ familiares: data });
                 next();
               }}
             />
@@ -149,10 +152,10 @@ const { user } = useAuth();
 
           {step === 5 && (
             <ResumenFinal
-              persona={persona}
-              institucion={institucion}
-              incidencia={incidencia}
-              familiares={familiares}
+              persona={formData.persona}
+              institucion={formData.institucion}
+              incidencia={formData.incidencia}
+              familiares={formData.familiares}
               onBack={back}
               onPublicar={handlePublicar}
               loading={loading}
