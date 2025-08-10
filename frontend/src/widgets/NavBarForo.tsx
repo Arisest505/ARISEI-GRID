@@ -274,7 +274,7 @@ export default function NavBarForo() {
 
         {/* Botón Hamburger (Mobile) */}
         <button
-          className="p-2 bg-black rounded-md md:hidden focus:outline-none focus:ring-2 focus:ring-cyan-500/60"
+          className="p-2 rounded-md md:hidden focus:outline-none focus:ring-2 bg-cyan-500 focus:ring-cyan-500/60"
           onClick={() => setMobileOpen(true)}
           aria-label="Abrir menú"
           aria-controls="foro-mobile-drawer"
@@ -383,7 +383,7 @@ export default function NavBarForo() {
         </nav>
 
         {/* Datos rápidos (nombre/código con copiar) */}
-        <div className="px-4 py-3 mt-auto text-sm text-gray-700 border-t border-gray-100">
+        <div className="px-4 py-3 mt-auto text-sm text-gray-700 bg-white border-t border-gray-100">
           <div className="flex items-center justify-between">
             <span className="font-medium">Usuario</span>
             <div className="flex items-center gap-1">
