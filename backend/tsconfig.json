@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "rootDir": "src",
+    "rootDir": ".", // <-- Cambia a "." para que el root sea la carpeta 'backend'
     "outDir": "dist",
     "types": ["node"],
     "esModuleInterop": true,
@@ -13,6 +13,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "prisma"],
+  "include": ["src", "prisma"], // <-- Así, incluye ambas carpetas
   "exclude": ["dist", "node_modules"]
 }
