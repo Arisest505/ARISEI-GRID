@@ -2,24 +2,29 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-export default function RequirePlanAccess({ children }: { children: JSX.Element }) {
-  const { user, loading } = useAuth();
+// Asegúrate de tener @types/react instalado para que JSX.Element sea reconocido
+import React from "react";
 
-  if (loading) return <p>Cargando...</p>;
+export default function RequirePlanAccess({ children }: { children: React.ReactNode }) {
+ const { user, loading } = useAuth();
 
-  const rol = user?.rol;
-  const tienePermisos = user?.permisos?.length > 0;
+if (loading) return <p>Cargando...</p>;
 
-  const isUsuarioPRO = rol?.startsWith("Usuario-PRO");
+ const rol = user?.rol;
 
-  const accesoPermitido =
-    rol === "Administrador" ||
-    rol === "Contador" ||
-    (isUsuarioPRO && tienePermisos);
+ // Solución del error 18048: Validar que user?.permisos existe antes de usar .length
+ const tienePermisos = user?.permisos && user.permisos.length > 0;
 
-  if (!accesoPermitido) {
-    return <Navigate to="/default" replace />;
-  }
+ const isUsuarioPRO = rol?.startsWith("Usuario-PRO");
 
-  return children;
+const accesoPermitido =
+ rol === "Administrador" ||
+rol === "Contador" ||
+(isUsuarioPRO && tienePermisos);
+
+ if (!accesoPermitido) {
+return <Navigate to="/default" replace />;
+ }
+
+ return children;
 }
