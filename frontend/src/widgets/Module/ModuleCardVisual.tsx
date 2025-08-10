@@ -1,6 +1,8 @@
 import * as LucideIcons from "lucide-react";
 import clsx from "clsx";
 
+
+
 interface Props {
   nombre: string;
   icono?: string;
@@ -12,7 +14,6 @@ interface Props {
 export default function ModuleCardVisual({
   nombre,
   icono,
-  path,
   activo,
   onToggle,
 }: Props) {
