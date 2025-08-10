@@ -1,13 +1,17 @@
 // 📦 GENERADORES Y FUENTE DE DATOS
 
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // Pooler 6543 para runtime
+  directUrl = env("DIRECT_URL")     // Directo 5432 SOLO migraciones
 }
+
 
 // 🧑‍💼 USUARIO Y ROLES
 
