@@ -92,10 +92,6 @@ const handleSubmit = async () => {
   try {
     setLoading(true);
 
-    if (!token) {
-      toast.error("No autorizado.");
-      return;
-    }
 
     // 1) Tomamos los valores del formulario
     const inc = formData?.incidencia ?? {};
