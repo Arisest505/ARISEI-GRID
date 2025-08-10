@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import RoleSelector from "./RoleSelector";
 import PermissionManager from "./PermissionManager";
 import ModuleTreeDragDrop from "./ModuleTreeDragDrop";
-import toast from "react-hot-toast";
+
 
 interface Rol {
   id: string;
