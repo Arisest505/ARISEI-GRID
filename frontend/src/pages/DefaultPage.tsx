@@ -21,7 +21,7 @@ export default function DefaultPage() {
         {/* Fondo visible desde /public */}
         <div
           className="absolute inset-0 bg-center bg-cover opacity-100 -z-100 blur-sm bg-gradient-black/100"
-          style={{ backgroundImage: "url('/11kjabnsjkddlñsnakljg65d6shgf.jpg')" }} // <-- tu imagen en /public
+          style={{ backgroundImage: "url('/11kjabnsjkddlñsnakljg65d6shgf.webp')" }} // <-- tu imagen en /public
         />
         {/* Overlay suave para no tapar la foto */}
         <div className="absolute inset-0 bg-black/30" />
