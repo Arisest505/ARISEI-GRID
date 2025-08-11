@@ -45,53 +45,79 @@ export default function ResumenIncidenciaStep({
   onBack,
 }: Props) {
   const navigate = useNavigate();
-
-  // Evita doble envío si el padre no bloquea correctamente el botón con "loading"
   const isSubmittingRef = useRef(false);
 
-  // Helpers seguros
   const fmtFecha = (d?: string | Date) => {
     if (!d) return "No especificado";
     const date = new Date(d);
     return isNaN(date.getTime()) ? "Fecha inválida" : date.toLocaleDateString("es-PE");
+    // si quieres hora: date.toLocaleString("es-PE")
   };
 
-  const fmtMonto = (v: any) => {
-    if (v === null || v === undefined || `${v}`.trim() === "") return "No aplica";
-    const n = Number(v);
-    return isNaN(n) ? "—" : `S/ ${n.toFixed(2)}`;
+  const fmtMonto = (v: unknown) => {
+    if (v === null || v === undefined) return "No aplica";
+    const s = String(v).trim();
+    if (!s) return "No aplica";
+    const n = Number(s);
+    return Number.isNaN(n) ? "—" : `S/ ${n.toFixed(2)}`;
   };
 
+  // adjuntosUrl puede venir como string (JSON o URL simple) o array; backend guarda TEXT
   const adjuntosSiNo = useMemo(() => {
-    const a: any = (incidencia as any)?.adjuntosUrl;
-    if (!a) return "No";
-    if (Array.isArray(a)) return a.length > 0 ? "Sí" : "No";
-    return typeof a === "string" && a.trim() ? "Sí" : "No";
+    const raw: unknown = (incidencia as any)?.adjuntosUrl;
+    if (!raw) return "No";
+
+    if (typeof raw === "string") {
+      const s = raw.trim();
+      if (!s) return "No";
+      // intentar parsear JSON stringificado de array
+      try {
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed)) return parsed.length > 0 ? "Sí" : "No";
+      } catch {
+        // no era JSON, es algún string no vacío (p.ej. una URL simple)
+      }
+      return "Sí";
+    }
+
+    if (Array.isArray(raw)) {
+      return raw.length > 0 ? "Sí" : "No";
+    }
+
+    return "Sí";
   }, [incidencia]);
 
-  // Validaciones mínimas antes de publicar
+  // Validaciones mínimas antes de publicar (alineadas con tu backend)
   const validar = (): string | null => {
     if (!persona?.dni) return "Falta el DNI de la persona afectada.";
     if (!persona?.nombreCompleto) return "Falta el nombre completo de la persona afectada.";
-    if (!institucion?.nombre) return "Falta el nombre de la institución.";
+
+    // Solo exigir nombre/tipo si mandas codigoModular (tu backend crea/upserta institución solo en ese caso)
+    if (institucion?.codigoModular) {
+      if (!institucion?.nombre) return "Falta el nombre de la institución.";
+      if (!institucion?.tipo) return "Falta el tipo de institución (Privada o Pública).";
+    }
+
     if (!incidencia?.titulo) return "Falta el título de la incidencia.";
+    if (!incidencia?.descripcion) return "Falta la descripción de la incidencia.";
     if (!incidencia?.tipoIncidencia) return "Falta el tipo de incidencia.";
     if (!incidencia?.estadoIncidencia) return "Falta el estado de la incidencia.";
     if (!incidencia?.confidencialidadNivel) return "Falta el nivel de confidencialidad.";
+
     // Monto (si viene) debe ser numérico
     if (
-      incidencia.montoDeuda !== undefined &&
-      incidencia.montoDeuda !== null &&
-      `${incidencia.montoDeuda}`.trim() !== "" &&
-      isNaN(Number(incidencia.montoDeuda))
+      (incidencia as any).montoDeuda !== undefined &&
+      (incidencia as any).montoDeuda !== null
     ) {
-      return "El monto de deuda debe ser numérico.";
+      const s = String((incidencia as any).montoDeuda).trim();
+      if (s && Number.isNaN(Number(s))) return "El monto de deuda debe ser numérico.";
     }
     return null;
   };
 
   const handlePublicarConAlerta = async () => {
     if (isSubmittingRef.current || loading) return;
+
     const err = validar();
     if (err) {
       toast.error(err);
@@ -108,9 +134,7 @@ export default function ResumenIncidenciaStep({
       setTimeout(() => navigate("/foro"), 900);
     } catch (e: any) {
       toast.dismiss(toastId);
-      const msg = e?.message || "No se pudo publicar la incidencia. Intenta nuevamente.";
-      toast.error(msg);
-      // Log útil para depuración
+      toast.error(e?.message || "No se pudo publicar la incidencia. Intenta nuevamente.");
       // eslint-disable-next-line no-console
       console.error("[PUBLICAR_ERROR]", e);
     } finally {
@@ -136,7 +160,7 @@ export default function ResumenIncidenciaStep({
             <AlertCircle className="w-6 h-6" /> Confirmación Final
           </h2>
 
-          <span className="w-[92px]" aria-hidden /> {/* spacer simétrico */}
+          <span className="w-[92px]" aria-hidden />
         </div>
 
         <div className="space-y-8">
@@ -146,35 +170,18 @@ export default function ResumenIncidenciaStep({
               <User className="w-5 h-5" /> Persona Afectada
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
-              <li>
-                <IdCard className="inline w-4 h-4 mr-1" /> <strong>DNI:</strong> {persona.dni}
-              </li>
-              <li>
-                <User className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {persona.nombreCompleto}
-              </li>
-              <li>
-                <Mail className="inline w-4 h-4 mr-1" /> <strong>Correo:</strong>{" "}
-                {persona.correo || "No especificado"}
-              </li>
-              <li>
-                <Phone className="inline w-4 h-4 mr-1" /> <strong>Teléfono:</strong>{" "}
-                {persona.telefono || "No especificado"}
-              </li>
+              <li><IdCard className="inline w-4 h-4 mr-1" /> <strong>DNI:</strong> {persona.dni}</li>
+              <li><User className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {persona.nombreCompleto}</li>
+              <li><Mail className="inline w-4 h-4 mr-1" /> <strong>Correo:</strong> {persona.correo || "No especificado"}</li>
+              <li><Phone className="inline w-4 h-4 mr-1" /> <strong>Teléfono:</strong> {persona.telefono || "No especificado"}</li>
               {persona.fechaNacimiento && (
-                <li>
-                  <Calendar className="inline w-4 h-4 mr-1" /> <strong>Nacimiento:</strong>{" "}
-                  {fmtFecha(persona.fechaNacimiento)}
-                </li>
+                <li><Calendar className="inline w-4 h-4 mr-1" /> <strong>Nacimiento:</strong> {fmtFecha(persona.fechaNacimiento)}</li>
               )}
               {persona.genero && (
-                <li>
-                  <User className="inline w-4 h-4 mr-1" /> <strong>Género:</strong> {persona.genero}
-                </li>
+                <li><User className="inline w-4 h-4 mr-1" /> <strong>Género:</strong> {persona.genero}</li>
               )}
               {persona.notasAdicionales && (
-                <li>
-                  <FileText className="inline w-4 h-4 mr-1" /> <strong>Notas:</strong> {persona.notasAdicionales}
-                </li>
+                <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Notas:</strong> {persona.notasAdicionales}</li>
               )}
             </ul>
           </section>
@@ -185,20 +192,10 @@ export default function ResumenIncidenciaStep({
               <School className="w-5 h-5" /> Institución
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
-              <li>
-                <School className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {institucion.nombre}
-              </li>
-              <li>
-                <MapPin className="inline w-4 h-4 mr-1" /> <strong>Ubicación:</strong>{" "}
-                {institucion.ubicacion || "N/A"}
-              </li>
-              <li>
-                <ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong> {institucion.tipo}
-              </li>
-              <li>
-                <KeyRound className="inline w-4 h-4 mr-1" /> <strong>Código Modular:</strong>{" "}
-                {institucion.codigoModular || "N/A"}
-              </li>
+              <li><School className="inline w-4 h-4 mr-1" /> <strong>Nombre:</strong> {institucion.nombre || "N/A"}</li>
+              <li><MapPin className="inline w-4 h-4 mr-1" /> <strong>Ubicación:</strong> {institucion.ubicacion || "N/A"}</li>
+              <li><ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong> {institucion.tipo || "N/A"}</li>
+              <li><KeyRound className="inline w-4 h-4 mr-1" /> <strong>Código Modular:</strong> {institucion.codigoModular || "N/A"}</li>
             </ul>
           </section>
 
@@ -208,36 +205,14 @@ export default function ResumenIncidenciaStep({
               <FileText className="w-5 h-5" /> Datos de la Incidencia
             </h3>
             <ul className="space-y-1 text-sm text-gray-800">
-              <li>
-                <FileText className="inline w-4 h-4 mr-1" /> <strong>Título:</strong> {incidencia.titulo}
-              </li>
-              <li>
-                <AlertCircle className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong>{" "}
-                {incidencia.tipoIncidencia}
-              </li>
-              <li>
-                <FileText className="inline w-4 h-4 mr-1" /> <strong>Monto Deuda:</strong>{" "}
-                {fmtMonto(incidencia.montoDeuda)}
-              </li>
-              <li>
-                <CheckCircle className="inline w-4 h-4 mr-1" /> <strong>Estado:</strong>{" "}
-                {incidencia.estadoIncidencia}
-              </li>
-              <li>
-                <ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Confidencialidad:</strong>{" "}
-                {incidencia.confidencialidadNivel}
-              </li>
-              <li>
-                <Calendar className="inline w-4 h-4 mr-1" /> <strong>Fecha:</strong>{" "}
-                {fmtFecha(incidencia.fechaIncidencia)}
-              </li>
-              <li>
-                <FileText className="inline w-4 h-4 mr-1" /> <strong>Descripción:</strong>{" "}
-                {incidencia.descripcion}
-              </li>
-              <li>
-                <Link2 className="inline w-4 h-4 mr-1" /> <strong>Adjuntos:</strong> {adjuntosSiNo}
-              </li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Título:</strong> {incidencia.titulo}</li>
+              <li><AlertCircle className="inline w-4 h-4 mr-1" /> <strong>Tipo:</strong> {incidencia.tipoIncidencia}</li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Monto Deuda:</strong> {fmtMonto((incidencia as any).montoDeuda)}</li>
+              <li><CheckCircle className="inline w-4 h-4 mr-1" /> <strong>Estado:</strong> {incidencia.estadoIncidencia}</li>
+              <li><ShieldCheck className="inline w-4 h-4 mr-1" /> <strong>Confidencialidad:</strong> {incidencia.confidencialidadNivel}</li>
+              <li><Calendar className="inline w-4 h-4 mr-1" /> <strong>Fecha:</strong> {fmtFecha(incidencia.fechaIncidencia)}</li>
+              <li><FileText className="inline w-4 h-4 mr-1" /> <strong>Descripción:</strong> {incidencia.descripcion}</li>
+              <li><Link2 className="inline w-4 h-4 mr-1" /> <strong>Adjuntos:</strong> {adjuntosSiNo}</li>
             </ul>
           </section>
 
@@ -249,20 +224,9 @@ export default function ResumenIncidenciaStep({
                 {familiares.map((f, idx) => (
                   <li key={`${f.dni || f.nombre || "fam"}-${idx}`}>
                     <User className="inline w-4 h-4 mr-1" />
-                    <strong>{f.nombre}</strong> ({f.tipoVinculo}){" "}
-                    <IdCard className="inline w-4 h-4 mx-1" /> DNI: {f.dni}
-                    {f.telefono && (
-                      <>
-                        {" "}
-                        <Phone className="inline w-4 h-4 mx-1" /> {f.telefono}
-                      </>
-                    )}
-                    {f.correo && (
-                      <>
-                        {" "}
-                        <Mail className="inline w-4 h-4 mx-1" /> {f.correo}
-                      </>
-                    )}
+                    <strong>{f.nombre}</strong> ({f.tipoVinculo}) <IdCard className="inline w-4 h-4 mx-1" /> DNI: {f.dni}
+                    {f.telefono && (<><Phone className="inline w-4 h-4 mx-1" /> {f.telefono}</>)}
+                    {f.correo && (<><Mail className="inline w-4 h-4 mx-1" /> {f.correo}</>)}
                   </li>
                 ))}
               </ul>
