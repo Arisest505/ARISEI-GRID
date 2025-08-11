@@ -28,7 +28,7 @@ const norm = (s?: string) =>
     .toUpperCase()
     .trim();
 
-// Mapea a enums típicos del backend
+// Mapea a enums típicos del backend (ajusta a tu schema si difiere)
 const MAP_TIPO_INCIDENCIA: Record<string, string> = {
   BULLYING: "BULLYING",
   ACOSO: "ACOSO",
@@ -104,7 +104,7 @@ export default function CrearIncidenciaWizard() {
       nombreCompleto: clean(formData.persona.nombreCompleto),
       correo: clean(formData.persona.correo),
       telefono: clean(formData.persona.telefono),
-      // Si tu backend no acepta fechas futuras, mejor envía undefined si es futura:
+      // Evita enviar fechas futuras (si tu backend las rechaza)
       fechaNacimiento: (() => {
         const iso = toISO(formData.persona.fechaNacimiento);
         if (!iso) return undefined;
@@ -121,17 +121,18 @@ export default function CrearIncidenciaWizard() {
       notas_adicionales: clean(formData.persona.notasAdicionales),
     };
 
-    // Institución (asegura enum PRIVADA/PUBLICA)
+    // Institución (solo exigimos nombre/tipo si hay código modular)
     const tipoInstRaw = norm(formData.institucion.tipo);
     const tipoInst = MAP_TIPO_INST[tipoInstRaw || ""] || undefined;
+    const codigoModular = clean(formData.institucion.codigoModular);
 
     const institucion = {
       nombre: clean(formData.institucion.nombre),
-      tipo: tipoInst, // <-- enum válido para backend
+      tipo: tipoInst, // enum válido
       ubicacion: clean(formData.institucion.ubicacion),
-      codigoModular: clean(formData.institucion.codigoModular),
+      codigoModular: codigoModular,
       // snake_case
-      codigo_modular: clean(formData.institucion.codigoModular),
+      codigo_modular: codigoModular,
     };
 
     // Incidencia (asegura enums)
@@ -181,11 +182,14 @@ export default function CrearIncidenciaWizard() {
       tipo_vinculo: clean(f.tipoVinculo),
     }));
 
-    // ===== Validaciones estrictas (evita 500 por enum inválido) =====
+    // ===== Validaciones estrictas =====
     if (!persona.dni) throw new Error("Falta el DNI de la persona afectada.");
     if (!persona.nombreCompleto) throw new Error("Falta el nombre completo de la persona afectada.");
-    if (!institucion.nombre) throw new Error("Falta el nombre de la institución.");
-    if (!institucion.tipo) throw new Error("Falta el tipo de institución (Privada o Pública).");
+    // Institución: solo valida si se envía código modular
+    if (institucion.codigoModular) {
+      if (!institucion.nombre) throw new Error("Falta el nombre de la institución.");
+      if (!institucion.tipo) throw new Error("Falta el tipo de institución (Privada o Pública).");
+    }
     if (!incidencia.titulo) throw new Error("Falta el título de la incidencia.");
     if (!incidencia.descripcion) throw new Error("Falta la descripción de la incidencia.");
     if (!incidencia.tipoIncidencia) throw new Error("Falta el tipo de incidencia válido.");
@@ -197,14 +201,14 @@ export default function CrearIncidenciaWizard() {
 
     const payload = {
       usuarioId: user.id,
-      usuario_id: user.id, // compat
+      usuario_id: user.id, // compat con backend
       persona,
       institucion,
       incidencia,
       familiares,
     };
 
-
+    // eslint-disable-next-line no-console
     console.log("[CREAR_INCIDENCIA_PAYLOAD_NORMALIZADO]", payload);
 
     isSubmittingRef.current = true;
@@ -238,6 +242,7 @@ export default function CrearIncidenciaWizard() {
       style={{ backgroundImage: "url('/01sdasgtkyukjgh.webp')" }}
       id="crear-incidencia"
     >
+      {/* Capa para contraste */}
       <div className="absolute inset-0 z-0 bg-black/40 backdrop-blur-sm" />
       <div className="relative z-10 max-w-6xl px-6 mx-auto">
         <h2 className="mb-10 text-4xl font-extrabold text-center text-white drop-shadow-lg">
