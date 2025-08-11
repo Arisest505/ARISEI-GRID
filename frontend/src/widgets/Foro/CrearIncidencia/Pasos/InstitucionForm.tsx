@@ -84,13 +84,9 @@ export default function PasoInstitucion({ onNext, onBack }: Props) {
             className="w-full px-4 py-2 bg-white border rounded-lg"
             required
           >
-            <option value="">Seleccione una opción</option>
+            <option value="">Sector de la institución</option>
             <option value="Privada">Privada</option>
             <option value="Pública">Pública</option>
-            <option value="Colegio">Colegio</option>
-            <option value="Universidad">Universidad</option>
-            <option value="Instituto">Instituto</option>
-            <option value="Otro">Otro</option>
           </select>
         </div>
 
