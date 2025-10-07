@@ -197,7 +197,7 @@ export default function RegisterSection({ onSwitch }: { onSwitch: () => void }) 
           <input
             type="text"
             name="user"
-            placeholder="Nombre alternativo / Nickname"
+            placeholder="Ingrese su nombre completo"
             value={formData.user}
             onChange={handleChange}
             className="w-full py-2 pl-10 pr-4 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500"
