@@ -34,7 +34,7 @@ const faqItems = [
   },
   {
     question: "¿Puedo usar solo el foro institucional?",
-    answer: "Sí. Por el momento.",
+    answer: "Sí. Por el momento, ya que se está desarrollando un sistema dedicado a la calificación de exámenes y pruebas de estudiantes con INTELIGENCIA ARTIFICIAL.",
   },
 ];
 
