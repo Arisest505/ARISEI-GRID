@@ -1,36 +1,56 @@
 import { motion } from "framer-motion";
-import { Settings2, Users2, Lightbulb } from "lucide-react";
+import { Settings2, Users2, Lightbulb, AlertTriangle, ShieldCheck } from "lucide-react";
 
 const versions = [
   {
     version: "v1.0.0",
-    date: "11 Agosto 2025",
+    date: "10 Septiembre 2025",
     author: "ARISEI",
     icon: <Users2 className="w-6 h-6 text-cyan-600" />,
     title: "Lanzamiento inicial",
     description:
-      "Primera versión funcional enfocada en registrar estudiantes con historial de deudas y compartir datos entre instituciones.",
+      "Primera versión funcional (BETA) cerrada enfocada en registrar estudiantes con historial de deudas y compartir datos entre instituciones.",
     borderColor: "border-cyan-600",
   },
   {
     version: "v1.0.1",
-    date: "11 Agosto 2025",
+    date: "15 Septiembre 2025",
     author: "ARISEI",
     icon: <Settings2 className="w-6 h-6 text-violet-600" />,
     title: "Gestión institucional",
     description:
-      "Se incorporó el módulo para que las instituciones configuren alertas, gestionen incidencias y personalicen políticas de admisión.",
+      "Se incorporo un nuevo modulo para la subida de incidencias en masa a partir de un excel en el modulo de (Carga Masiva).",
     borderColor: "border-violet-600",
   },
   {
-    version: "v1.1.7",
-    date: "11 Agosto 2025",
+    version: "v1.1.2",
+    date: "25 Septiembre 2025",
     author: "ARISEI",
     icon: <Lightbulb className="w-6 h-6 text-yellow-500" />,
     title: "Detección inteligente",
     description:
-      "Se implementó Carga Masiva de Incidencias para facilitar las subidas de información de forma masiva a la plataforma.",
+      "Se implementó el modulo de (Mis Incidencias) para poder ver, actualizar y eliminar tus incidencias.",
     borderColor: "border-yellow-500",
+  },
+  {
+    version: "v1.1.3",
+    date: "26 Septiembre 2025",
+    author: "ARISEI",
+    icon: <AlertTriangle className="w-6 h-6 text-red-500" />,
+    title: "Mejora en (Carga Masiva)",
+    description:
+      "Realizamos la creacion de un ejemplo para el llenado del excel para el modulo (Carga Masiva) y asi tener un buen llenado y subida de datos.",
+    borderColor: "border-red-500",
+  },
+    {
+    version: "v1.1.4",
+    date: "06 Octubre 2025",
+    author: "ARISEI",
+    icon: <ShieldCheck className="w-6 h-6 text-green-500" />,
+    title: "Lanzamiento Oficial (ALPHA)",
+    description:
+      "Salimos de la fase de pruebas (BETA) y pasamos a la fase de lanzamiento (ALPHA) del sistema, con nuevas funcionalidades y mejoras en la experiencia del usuario.",
+    borderColor: "border-green-500",
   },
 ];
 

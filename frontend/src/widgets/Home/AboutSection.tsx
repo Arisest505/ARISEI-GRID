@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { AlertTriangle, ShieldCheck, FileSearch, Gavel, Ban } from "lucide-react";
 
 const ABOUT_INTRO = `Nuestra plataforma combate la informalidad financiera académica,
-informando a las instituciones sobre estudiantes con historial de deudas no resueltas.`;
+informando a las instituciones sobre estudiantes con historial de deudas no resueltas entre otras incidencias educativas.`;
 
 const ABOUT_PARAGRAPH = `Alertamos sobre posibles morosidades, compartimos información segura del historial
 crediticio y promovemos normativas justas entre instituciones educativas para proteger

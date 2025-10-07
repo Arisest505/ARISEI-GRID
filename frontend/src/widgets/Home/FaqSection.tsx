@@ -19,11 +19,6 @@ const faqs = [
       "Solo datos relevantes y autorizados sobre historial de pagos, incidencias y bloqueos, bajo normativas de seguridad y ética.",
   },
   {
-    question: "¿Los estudiantes son notificados?",
-    answer:
-      "Sí. Los estudiantes reciben notificaciones formales cuando una institución registra una deuda o incidencia en el sistema.",
-  },
-  {
     question: "¿Qué instituciones pueden usarlo?",
     answer:
       "Colegios, universidades, institutos, academias y cualquier entidad educativa que desee implementar control financiero interno.",

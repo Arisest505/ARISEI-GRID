@@ -45,7 +45,7 @@ export default function HeroSection() {
 
           className="max-w-2xl mb-12 text-lg font-bold text-black md:text-xl"
         >
-          Una plataforma moderna, escalable y flexible para gestión, administración e información educativa.
+          La solución integral para gestionar y prevenir el fraude académico en instituciones educativas.
         </motion.p>
 
         <motion.a

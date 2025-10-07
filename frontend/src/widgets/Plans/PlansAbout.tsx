@@ -34,12 +34,12 @@ const SUPPORT = {
 const plans: PlanCard[] = [
   {
     name: "Demo",
-    price: "Gratis por 7 días",
+    price: "Gratis por 30 días",
     services: ["Foro Institucional"],
     description:
       "Evalúa nuestra plataforma con funciones básicas enfocadas en control académico y alertas institucionales.",
     features: [
-      "Prueba del sistema de alertas por deudas",
+      "Prueba del sistema por 30 días",
       "Visualización limitada de incidencias",
       "Soporte básico vía correo",
     ],

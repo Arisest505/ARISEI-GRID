@@ -6,19 +6,25 @@ const mockQuestions = [
     id: 1,
     title: "¿Cómo puedo consultar si un estudiante tiene deudas activas?",
     description:
-      "Desde el panel institucional, accede al módulo 'Historial de incidencias' e ingresa el ID del estudiante.",
+      "Desde el modulo inicial (Incidencias) se puede realizar una busqueda manual ingresando el DNI del estudiante.",
   },
   {
     id: 2,
     title: "¿Qué sucede cuando se registra una deuda en el sistema?",
     description:
-      "Se genera una alerta visible para otras instituciones conectadas al sistema. El estudiante es notificado automáticamente.",
+      "Se genera card en el modulo (Incidencias) para su seguimiento y resolución.",
   },
   {
     id: 3,
     title: "¿Puedo reportar a un estudiante con documentación pendiente?",
     description:
-      "Sí. El sistema permite adjuntar evidencia, establecer un tipo de incidencia y asignar una gravedad.",
+      "Por el momento no, pero ya se esta viendo la forma de poder hacerlo e implementarlo en futuras actualizaciones.",
+  },
+    {
+    id: 4,
+    title: "¿Se puede ingresar otros tipos de incidencias?",
+    description:
+      "Si, se pueden ingresar incidencias de cualquier tipo.",
   },
 ];
 
